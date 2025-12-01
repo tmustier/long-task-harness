@@ -17,6 +17,14 @@ Invoke this skill when:
 - Working on tasks with 10+ discrete features or components
 - Building something that requires iterative development with testing
 
+## First-Time Setup
+
+**On first invocation**, if `claude-progress.md` doesn't exist, prompt:
+
+> "Would you like me to add harness instructions to CLAUDE.md? This ensures context reloads after `/compact`."
+
+If yes, add the snippet from "CLAUDE.md Integration" below.
+
 ## Workflow
 
 ### Phase 1: Project Initialization
@@ -98,3 +106,20 @@ Before ending a session:
 
 - `features_template.json` - Template for the feature tracking file
 - `progress_template.md` - Template for the progress documentation file
+
+---
+
+## CLAUDE.md Integration
+
+Add this to the project's `CLAUDE.md` to ensure continuity after `/compact`:
+
+```markdown
+## Multi-Session Development
+
+This project uses `long-task-harness`. After `/compact` or new sessions:
+
+1. Read `claude-progress.md` for work history
+2. Read `features.json` for feature tracking
+3. Check `git log --oneline -10` for recent commits
+4. Continue from "Next Steps" in the latest session
+```

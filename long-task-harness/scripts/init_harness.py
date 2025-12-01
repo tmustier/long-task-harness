@@ -136,6 +136,28 @@ echo "Environment ready!"
     print(f"  ✅ Created init.sh")
 
 
+def check_claude_md(project_dir: Path) -> bool:
+    """Check if CLAUDE.md exists and contains harness instructions."""
+    claude_md = project_dir / "CLAUDE.md"
+    if not claude_md.exists():
+        return False
+    content = claude_md.read_text()
+    return "long-task-harness" in content.lower() or "claude-progress.md" in content
+
+
+def get_claude_md_snippet() -> str:
+    """Return the CLAUDE.md snippet to add."""
+    return '''## Multi-Session Development
+
+This project uses `long-task-harness`. After `/compact` or new sessions:
+
+1. Read `claude-progress.md` for work history
+2. Read `features.json` for feature tracking
+3. Check `git log --oneline -10` for recent commits
+4. Continue from "Next Steps" in the latest session
+'''
+
+
 def main():
     project_dir = Path.cwd()
     project_name = project_dir.name
@@ -145,6 +167,9 @@ def main():
     create_progress_file(project_dir, project_name)
     create_features_file(project_dir)
     create_init_script(project_dir)
+
+    # Check CLAUDE.md integration
+    has_claude_md_integration = check_claude_md(project_dir)
 
     print(f"""
 ✅ Harness initialized!
@@ -160,6 +185,11 @@ At the start of each session, read:
 - features.json for next tasks
 - git log for recent history
 """)
+
+    if not has_claude_md_integration:
+        print("""⚠️  Add this to CLAUDE.md for context reload after /compact:
+""")
+        print(get_claude_md_snippet())
 
 
 if __name__ == "__main__":
