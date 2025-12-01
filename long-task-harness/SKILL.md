@@ -1,6 +1,6 @@
 ---
 name: long-task-harness
-description: Maintains continuity across long-running tasks that span multiple Claude Code sessions. Use this skill when starting a complex project that will require multiple sessions to complete, or when resuming work on an existing multi-session project. Provides structured workflows for progress documentation, feature tracking, and session handoff protocols.
+description: Maintains continuity across long-running tasks that span multiple Claude Code sessions. This skill should be used when starting a complex project that will require multiple sessions to complete, or when resuming work on an existing multi-session project. Provides structured workflows for progress documentation, feature tracking, and session handoff protocols.
 ---
 
 # Long Task Harness
@@ -33,7 +33,7 @@ When starting a new multi-session project, initialize the harness structure:
 
 1. **Run the initialization script** to create progress tracking files:
    ```bash
-   python3 ~/.claude/skills/long-task-harness/scripts/init_harness.py
+   python3 scripts/init_harness.py
    ```
 
 2. **Review generated files**:
