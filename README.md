@@ -43,6 +43,15 @@ The skill will guide you through:
 2. Creating a feature list for the project
 3. Establishing session startup protocols
 
+## Optional: CLAUDE.md Configuration
+
+Add this to your `~/.claude/CLAUDE.md` to prompt Claude to consider the skill when planning:
+
+```markdown
+## Planning complex tasks
+When a task warrants planning (or the user explicitly asks for a plan), consider whether the `long-task-harness` skill would help - especially for work that may span multiple sessions or has many discrete features to track.
+```
+
 ## License
 
 MIT
