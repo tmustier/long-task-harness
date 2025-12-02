@@ -1,33 +1,36 @@
 # Long Task Harness
 
-A Claude Code skill for maintaining continuity across long-running tasks that span multiple sessions.
+A Claude Code plugin for maintaining continuity across long-running tasks that span multiple sessions.
 
 ## About
 
-This skill codifies the patterns and practices from Anthropic's engineering article: **[Effective Harnesses for Long-Running Agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)**.
+This plugin codifies the patterns and practices from Anthropic's engineering article: **[Effective Harnesses for Long-Running Agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)**.
 
-The core problem: AI agents lose context across sessions. Each new context window starts fresh, creating a "shift change" problem where continuity is lost. This skill provides structured workflows to maintain progress documentation, feature tracking, and session handoff protocols.
+The core problem: AI agents lose context across sessions. Each new context window starts fresh, creating a "shift change" problem where continuity is lost. This plugin provides structured workflows to maintain progress documentation, feature tracking, and session handoff protocols.
 
 ## Key Features
 
 - **Progress Documentation**: Maintain `claude-progress.md` files documenting work history
 - **Feature List Strategy**: Track testable features in structured JSON format
 - **Session Startup Protocol**: Consistent initialization steps for each new session
-- **Incremental Work Pattern**: One feature per session with git-based checkpointing
+- **Context-Efficient Scripts**: Load only recent sessions (~78% context reduction)
+- **Session Hooks**: Auto-remind Claude to invoke the skill on startup
 
 ## Installation
 
-### Option 1: Clone to your skills directory
+### Option 1: Plugin Install (Recommended)
 
-```bash
-git clone https://github.com/tmustier/long-task-harness.git ~/.claude/skills/long-task-harness
+```
+/plugin install tmustier/long-task-harness
 ```
 
-### Option 2: Symlink from a local clone
+Works on both Claude Code CLI and Claude Code web.
+
+### Option 2: Clone to skills directory (CLI only)
 
 ```bash
-git clone https://github.com/tmustier/long-task-harness.git ~/projects/long-task-harness
-ln -s ~/projects/long-task-harness/long-task-harness ~/.claude/skills/long-task-harness
+git clone https://github.com/tmustier/long-task-harness.git ~/long-task-harness
+ln -s ~/long-task-harness/skills/long-task-harness ~/.claude/skills/long-task-harness
 ```
 
 ## Usage
@@ -35,22 +38,41 @@ ln -s ~/projects/long-task-harness/long-task-harness ~/.claude/skills/long-task-
 Once installed, invoke the skill when starting a complex, multi-session project:
 
 ```
-Use the long-task-harness skill to set up this project for multi-session work
+invoke the long-task-harness skill
 ```
 
 The skill will guide you through:
-1. Initializing progress tracking files
+1. Initializing progress tracking files (`claude-progress.md`, `features.json`)
 2. Creating a feature list for the project
-3. Establishing session startup protocols
+3. Installing session hooks (optional)
 
-## Optional: CLAUDE.md Configuration
+### Session Startup (after initialization)
 
-Add this to your `~/.claude/CLAUDE.md` to prompt Claude to consider the skill when planning:
+On subsequent sessions, the skill uses context-efficient scripts:
 
-```markdown
-## Planning complex tasks
-When a task warrants planning (or the user explicitly asks for a plan), consider whether the `long-task-harness` skill would help - especially for work that may span multiple sessions or has many discrete features to track.
+```bash
+python3 ~/.claude/skills/long-task-harness/scripts/read_progress.py    # header + last 3 sessions
+python3 ~/.claude/skills/long-task-harness/scripts/read_features.py    # incomplete + completed summary
 ```
+
+### Session Hooks
+
+Install hooks to auto-remind Claude at session start:
+
+```bash
+python3 ~/.claude/skills/long-task-harness/scripts/install_hooks.py
+```
+
+This adds to `.claude/settings.json`:
+- **SessionStart**: Reminds to invoke skill (unless user opts out)
+- **PreToolUse**: Reminds to update progress before git commit
+
+## Files Created
+
+| File | Purpose |
+|------|---------|
+| `claude-progress.md` | Session-by-session work log |
+| `features.json` | Feature checklist with pass/fail status |
 
 ## License
 

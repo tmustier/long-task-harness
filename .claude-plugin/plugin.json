@@ -1,0 +1,12 @@
+{
+  "name": "long-task-harness",
+  "version": "1.0.0",
+  "description": "Maintains continuity across long-running tasks that span multiple Claude Code sessions. Provides structured workflows for progress documentation, feature tracking, and session handoff protocols.",
+  "author": {
+    "name": "Thomas Mustier"
+  },
+  "homepage": "https://github.com/tmustier/long-task-harness",
+  "repository": "https://github.com/tmustier/long-task-harness",
+  "license": "MIT",
+  "keywords": ["productivity", "task-tracking", "multi-session", "continuity"]
+}

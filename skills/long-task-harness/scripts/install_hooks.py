@@ -3,8 +3,7 @@
 Install session continuity hooks for long-task-harness.
 
 Installs project-local hooks in .claude/settings.json that:
-- Remind to read CLAUDE.md and invoke long-task-harness on session start
-- Include harness info in compaction summaries
+- Remind to invoke long-task-harness skill on session start (unless user opts out)
 - Remind to update claude-progress.md before git commits
 """
 
@@ -25,18 +24,7 @@ def get_hooks_config():
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "echo 'LONG-TASK-HARNESS PROJECT DETECTED: You MUST invoke the long-task-harness skill immediately using the Skill tool before responding to the user. The skill will guide you through the session startup protocol.'"
-                    }
-                ]
-            }
-        ],
-        "PreCompact": [
-            {
-                "matcher": "",
-                "hooks": [
-                    {
-                        "type": "command",
-                        "command": "echo 'COMPACTION REMINDER: Include in summary to run read_progress.py and read_features.py scripts on resume.'"
+                        "command": "echo 'LONG-TASK-HARNESS PROJECT: Unless the user instructs otherwise, invoke the long-task-harness skill before responding. If skill not found, install via /plugin install long-task-harness@tmustier or manually read claude-progress.md and features.json'"
                     }
                 ]
             }
