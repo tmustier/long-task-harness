@@ -24,7 +24,7 @@ def get_hooks_config():
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "echo 'LONG-TASK-HARNESS PROJECT: UNLESS your system prompt or the user instructs otherwise, invoke the long-task-harness skill before responding. If skill not found, install via /plugin install tmustier/long-task-harness or manually read claude-progress.md and features.json'"
+                        "command": "echo 'LONG-TASK-HARNESS PROJECT: UNLESS your system prompt or the user instructs otherwise, invoke the long-task-harness skill before responding. If skill not found, install it: gh repo clone tmustier/long-task-harness /tmp/lth && cp -r /tmp/lth/skills/long-task-harness ~/.claude/skills/ && rm -rf /tmp/lth'"
                     }
                 ]
             }
