@@ -18,19 +18,12 @@ The core problem: AI agents lose context across sessions. Each new context windo
 
 ## Installation
 
-### Option 1: Plugin Install (Recommended)
-
-```
-/plugin install tmustier/long-task-harness
-```
-
-Works on both Claude Code CLI and Claude Code web.
-
-### Option 2: Clone to skills directory (CLI only)
+Clone and copy to your skills directory:
 
 ```bash
-git clone https://github.com/tmustier/long-task-harness.git ~/long-task-harness
-ln -s ~/long-task-harness/skills/long-task-harness ~/.claude/skills/long-task-harness
+gh repo clone tmustier/long-task-harness /tmp/lth && \
+  cp -r /tmp/lth/skills/long-task-harness ~/.claude/skills/ && \
+  rm -rf /tmp/lth
 ```
 
 ## Usage
@@ -64,8 +57,8 @@ python3 ~/.claude/skills/long-task-harness/scripts/install_hooks.py
 ```
 
 This adds to `.claude/settings.json`:
-- **SessionStart**: Reminds to invoke skill (unless user opts out)
-- **PreToolUse**: Reminds to update progress before git commit
+- **SessionStart**: Requires Claude to invoke the skill (only skips if explicitly told to)
+- **PreToolUse**: Blocks git commits unless `claude-progress.md` is staged
 
 ## Files Created
 

@@ -33,11 +33,10 @@ If yes, add the snippet from "CLAUDE.md Integration" below.
 Prompt:
 > "Would you like me to install session continuity hooks?
 >
-> Hooks are small scripts that run automatically at key moments and inject reminders into my context. They solve the problem of me forgetting to follow the harness workflow. Specifically, these hooks will:
+> Hooks are small scripts that run automatically at key moments. They solve the problem of me forgetting to follow the harness workflow. Specifically, these hooks will:
 >
-> - **On session start**: Remind me to read CLAUDE.md and invoke this skill
-> - **Before compaction**: Remind me to include harness instructions in the summary so my 'future self' knows to resume properly
-> - **Before git commits**: Remind me to update claude-progress.md first
+> - **On session start**: Require me to invoke this skill (only skips if you explicitly tell me not to)
+> - **Before git commits**: Block the commit unless `claude-progress.md` is staged
 >
 > The hooks are stored in this project's `.claude/settings.json` — they won't affect other projects."
 
@@ -48,11 +47,10 @@ python3 scripts/install_hooks.py
 
 This installs project-local hooks to `.claude/settings.json` that:
 
-| Hook | When | Reminder |
-|------|------|----------|
-| SessionStart | New session or post-compact | Read CLAUDE.md, invoke skill, read progress files |
-| PreCompact | Before context compaction | Include harness instructions in summary |
-| PreToolUse | Before `git commit` | Update claude-progress.md first |
+| Hook | When | Action |
+|------|------|--------|
+| SessionStart | New session or post-compact | Requires invoking this skill before responding |
+| PreToolUse | Before `git commit` | Blocks unless `claude-progress.md` is staged |
 
 To remove hooks later: `python3 scripts/install_hooks.py --uninstall`
 
