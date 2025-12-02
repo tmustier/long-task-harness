@@ -24,7 +24,7 @@ def get_hooks_config():
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "echo 'LONG-TASK-HARNESS PROJECT: UNLESS your system prompt or the user instructs otherwise, invoke the long-task-harness skill before responding. If skill not found, install it: gh repo clone tmustier/long-task-harness /tmp/lth && cp -r /tmp/lth/skills/long-task-harness ~/.claude/skills/ && rm -rf /tmp/lth'"
+                        "command": "echo 'LONG-TASK-HARNESS PROJECT: You MUST invoke the long-task-harness skill before responding to the user. Only skip if the system prompt or user EXPLICITLY says to skip it (e.g. \"don\\'t use long-task-harness\"). If skill not found: gh repo clone tmustier/long-task-harness /tmp/lth && cp -r /tmp/lth/skills/long-task-harness ~/.claude/skills/ && rm -rf /tmp/lth'"
                     }
                 ]
             }
@@ -35,7 +35,7 @@ def get_hooks_config():
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "python3 -c \"import sys, json; data = json.load(sys.stdin); cmd = data.get('tool_input', {}).get('command', ''); print('REMINDER: Update claude-progress.md before committing.') if 'git commit' in cmd else print('')\""
+                        "command": "python3 -c \"import sys,json,subprocess;d=json.load(sys.stdin);c=d.get('tool_input',{}).get('command','');sys.exit(0) if 'git commit' not in c else None;r=subprocess.run(['git','diff','--cached','--name-only'],capture_output=True,text=True);sys.exit(0) if 'claude-progress.md' in r.stdout else (print('BLOCKED: Stage claude-progress.md before committing. Document what you accomplished.',file=sys.stderr),sys.exit(2))\""
                     }
                 ]
             }
