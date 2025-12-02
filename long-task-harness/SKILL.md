@@ -19,11 +19,42 @@ Invoke this skill when:
 
 ## First-Time Setup
 
-**On first invocation**, if `claude-progress.md` doesn't exist, prompt:
+**On first invocation**, if `claude-progress.md` doesn't exist, offer two optional configurations:
 
+### Option 1: CLAUDE.md Integration
+
+Prompt:
 > "Would you like me to add harness instructions to CLAUDE.md? This ensures context reloads after `/compact`."
 
 If yes, add the snippet from "CLAUDE.md Integration" below.
+
+### Option 2: Session Continuity Hooks (Recommended)
+
+Prompt:
+> "Would you like me to install session continuity hooks?
+>
+> Hooks are small scripts that run automatically at key moments and inject reminders into my context. They solve the problem of me forgetting to follow the harness workflow. Specifically, these hooks will:
+>
+> - **On session start**: Remind me to read CLAUDE.md and invoke this skill
+> - **Before compaction**: Remind me to include harness instructions in the summary so my 'future self' knows to resume properly
+> - **Before git commits**: Remind me to update claude-progress.md first
+>
+> The hooks are stored in this project's `.claude/settings.json` — they won't affect other projects."
+
+If yes, run:
+```bash
+python3 scripts/install_hooks.py
+```
+
+This installs project-local hooks to `.claude/settings.json` that:
+
+| Hook | When | Reminder |
+|------|------|----------|
+| SessionStart | New session or post-compact | Read CLAUDE.md, invoke skill, read progress files |
+| PreCompact | Before context compaction | Include harness instructions in summary |
+| PreToolUse | Before `git commit` | Update claude-progress.md first |
+
+To remove hooks later: `python3 scripts/install_hooks.py --uninstall`
 
 ## Workflow
 
@@ -53,12 +84,20 @@ When starting a new multi-session project, initialize the harness structure:
 At the start of each new session, follow this protocol:
 
 1. **Check current directory** and verify in the correct project
-2. **Read progress files**:
-   - `claude-progress.md` for work history
-   - `git log --oneline -20` for recent commits
-3. **Review feature list** in `features.json`
-4. **Run basic functionality tests** to verify current state
-5. **Select next incomplete feature** to work on
+2. **Get project context** using the helper scripts (note: use the skill's base directory path shown above):
+   ```bash
+   python3 ~/.claude/skills/long-task-harness/scripts/read_progress.py    # header + last 3 sessions
+   python3 ~/.claude/skills/long-task-harness/scripts/read_features.py    # incomplete (full) + completed (names)
+   git log --oneline -10
+   ```
+
+   For more context if needed:
+   - More sessions: `python3 ~/.claude/skills/long-task-harness/scripts/read_progress.py -n 5`
+   - Full history: `python3 ~/.claude/skills/long-task-harness/scripts/read_progress.py --all`
+   - Full features: `python3 ~/.claude/skills/long-task-harness/scripts/read_features.py --all`
+
+3. **Run basic functionality tests** to verify current state
+4. **Select next incomplete feature** to work on
 
 ### Phase 3: Incremental Work Pattern
 
@@ -97,6 +136,9 @@ Before ending a session:
 ### scripts/
 
 - `init_harness.py` - Initializes the harness structure in the current project
+- `install_hooks.py` - Installs/uninstalls session continuity hooks to `.claude/settings.json`
+- `read_progress.py` - Extracts header + recent sessions from claude-progress.md (use at session start)
+- `read_features.py` - Shows incomplete features (full) + completed (names) from features.json
 
 ### references/
 
