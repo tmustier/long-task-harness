@@ -35,7 +35,7 @@ def get_hooks_config():
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "python3 -c \"import sys,json,subprocess;d=json.load(sys.stdin);c=d.get('tool_input',{}).get('command','');sys.exit(0) if 'git commit' not in c else None;r=subprocess.run(['git','diff','--cached','--name-only'],capture_output=True,text=True);sys.exit(0) if 'claude-progress.md' in r.stdout else (print('BLOCKED: Stage claude-progress.md before committing. Document what you accomplished.',file=sys.stderr),sys.exit(2))\""
+                        "command": "python3 -c \"import sys,json,subprocess;d=json.load(sys.stdin);c=d.get('tool_input',{}).get('command','');sys.exit(0) if 'git commit' not in c else None;r=subprocess.run(['git','diff','--cached','--name-only'],capture_output=True,text=True);sys.exit(0) if 'claude-progress.md' in r.stdout else (print('BLOCKED: claude-progress.md not staged. Steps: 1) Update claude-progress.md with session notes, 2) git add claude-progress.md, 3) Then run git commit.',file=sys.stderr),sys.exit(2))\""
                     }
                 ]
             }
