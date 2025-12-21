@@ -27,7 +27,10 @@ def get_skill_dir():
 
 def create_progress_file(project_dir: Path, project_name: str):
     """Create the claude-progress.md file from template."""
-    template_path = get_skill_dir() / "assets" / "progress_template.md"
+    # Prefer v2 template if available
+    template_path = get_skill_dir() / "assets" / "progress_template_v2.md"
+    if not template_path.exists():
+        template_path = get_skill_dir() / "assets" / "progress_template.md"
     output_path = project_dir / "claude-progress.md"
 
     if output_path.exists():
@@ -72,7 +75,10 @@ def create_progress_file(project_dir: Path, project_name: str):
 
 def create_features_file(project_dir: Path):
     """Create the features.json file from template."""
-    template_path = get_skill_dir() / "assets" / "features_template.json"
+    # Prefer v2 template if available
+    template_path = get_skill_dir() / "assets" / "features_template_v2.json"
+    if not template_path.exists():
+        template_path = get_skill_dir() / "assets" / "features_template.json"
     output_path = project_dir / "features.json"
 
     if output_path.exists():

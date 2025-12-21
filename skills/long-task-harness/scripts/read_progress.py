@@ -65,6 +65,49 @@ def parse_progress_file(content: str) -> tuple[str, list[tuple[str, str]]]:
     return header, sessions
 
 
+def extract_session_number(title: str) -> int | None:
+    """Extract session number from title like 'Session 5 | 2024-12-18 | ...'"""
+    match = re.match(r'Session\s+(\d+)', title)
+    return int(match.group(1)) if match else None
+
+
+def format_session_list(sessions: list[tuple[str, str]]) -> str:
+    """Format a compact list of all sessions for quick scanning."""
+    lines = [f"[{len(sessions)} sessions found]\n"]
+    for title, content in sessions:
+        # Extract first line of goal/accomplished if present
+        summary = ""
+        for marker in ['#### Goal', '**Goal**:', 'Goal:']:
+            if marker in content:
+                idx = content.find(marker)
+                rest = content[idx + len(marker):].strip()
+                summary = rest.split('\n')[0].strip()[:60]
+                break
+        
+        session_num = extract_session_number(title)
+        if session_num:
+            lines.append(f"  {session_num:3d}. {title[:50]}{'...' if len(title) > 50 else ''}")
+        else:
+            lines.append(f"       {title[:50]}{'...' if len(title) > 50 else ''}")
+        if summary:
+            lines.append(f"       └─ {summary}...")
+    
+    lines.append(f"\n[Use --session N to read a specific session]")
+    return '\n'.join(lines)
+
+
+def format_single_session(sessions: list[tuple[str, str]], session_num: int) -> str:
+    """Format a single session by number."""
+    for title, content in sessions:
+        if extract_session_number(title) == session_num:
+            return f"[Session {session_num}]\n\n{content}"
+    
+    # Session not found - show available
+    available = [extract_session_number(t) for t, _ in sessions]
+    available = [n for n in available if n is not None]
+    return f"Error: Session {session_num} not found. Available: {', '.join(map(str, sorted(available)))}"
+
+
 def format_output(header: str, sessions: list[tuple[str, str]],
                   num_sessions: int | None, show_all: bool) -> str:
     """Format the output with header and selected sessions."""
@@ -111,15 +154,21 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python3 read_progress.py           # header + last 3 sessions
-  python3 read_progress.py -n 5      # header + last 5 sessions
-  python3 read_progress.py --all     # everything
+  python3 read_progress.py              # header + last 3 sessions
+  python3 read_progress.py -n 5         # header + last 5 sessions
+  python3 read_progress.py --all        # everything
+  python3 read_progress.py --list       # list all sessions (for quick scan)
+  python3 read_progress.py --session 12 # read specific session by number
         """
     )
     parser.add_argument('-n', '--sessions', type=int, default=3,
                         help='Number of recent sessions to show (default: 3)')
     parser.add_argument('--all', action='store_true',
                         help='Show all sessions')
+    parser.add_argument('--list', '-l', action='store_true',
+                        help='List all sessions with titles (compact view)')
+    parser.add_argument('--session', '-s', type=int,
+                        help='Show a specific session by number')
     parser.add_argument('--file', type=Path,
                         help='Path to claude-progress.md (default: auto-detect)')
 
@@ -140,7 +189,17 @@ Examples:
     content = progress_file.read_text()
     header, sessions = parse_progress_file(content)
 
-    # Format output
+    # Handle --list flag
+    if args.list:
+        print(format_session_list(sessions))
+        return
+
+    # Handle --session flag
+    if args.session:
+        print(format_single_session(sessions, args.session))
+        return
+
+    # Default: Format output with header and recent sessions
     output = format_output(header, sessions, args.sessions, args.all)
     print(output)
 

@@ -107,6 +107,151 @@ During each session:
 4. **Update `claude-progress.md`** with session notes before ending
 5. **Use git to revert** if changes break functionality
 
+### Maintaining Bidirectional Links (v2 Format)
+
+The v2 format introduces **bidirectional linking** between sessions and features. This enables efficient history lookup for long-running projects.
+
+#### Session Entry Structure (claude-progress.md)
+
+Each session should include structured metadata:
+
+```markdown
+### Session 5 | 2024-12-18 | Commits: a1b2c3d..e4f5g6h
+
+#### Metadata
+- **Features**: auth-001 (progressed), api-003 (completed)
+- **Files Changed**: 
+  - `src/auth/login.ts` (+45/-12) - added refresh token logic
+  - `tests/auth.test.ts` (+30/-0) - new test cases
+- **Commit Summary**: `feat(auth): add refresh tokens`, `test: auth flow coverage`
+
+#### Goal
+[One-liner describing session objective]
+
+#### Accomplished
+- [x] Task completed
+- [ ] Task incomplete (carried forward)
+
+#### Decisions
+- **[D1]** Chose JWT refresh over sliding sessions - better for mobile clients
+
+#### Context & Learnings
+[What future sessions need to know - focus on WHY, not the struggle]
+
+#### Next Steps
+1. [Priority] → affects: feature-id
+```
+
+#### Feature History Structure (features.json)
+
+When updating a feature, also update its `history` block:
+
+```json
+{
+  "id": "auth-001",
+  "name": "User authentication",
+  "passes": false,
+  "history": {
+    "sessions": [
+      {"session": 3, "date": "2024-12-15", "action": "started", "summary": "Initial login flow"},
+      {"session": 5, "date": "2024-12-18", "action": "progressed", "summary": "Added refresh tokens"}
+    ],
+    "files": ["src/auth/login.ts", "src/auth/tokens.ts", "tests/auth.test.ts"],
+    "decisions": [
+      {"session": 3, "decision": "Use JWT for stateless auth"},
+      {"session": 5, "decision": "Refresh tokens over sliding sessions"}
+    ]
+  }
+}
+```
+
+#### When to Update Links
+
+| Event | Update claude-progress.md | Update features.json |
+|-------|---------------------------|---------------------|
+| Start working on feature | Add to Metadata: `feature-id (started)` | Add session entry with `action: started` |
+| Make progress | Add to Metadata: `feature-id (progressed)` | Add session entry with `action: progressed` |
+| Complete feature | Add to Metadata: `feature-id (completed)` | Set `passes: true`, add final session entry |
+| Make key decision | Add to Decisions: `[DN] decision text` | Add to `history.decisions` array |
+| Touch new file | Add to Files Changed | Add to `history.files` array if new |
+
+#### Why This Matters
+
+Bidirectional links enable **efficient history retrieval** for long projects:
+- Need context on a feature? → Check `history.sessions` for relevant session numbers
+- Resuming after weeks? → Subagent can find all sessions touching that feature
+- Debugging a file? → Find which features/sessions modified it
+
+This avoids the "read all history or read nothing" problem.
+
+### History Research Protocol (For Long Projects)
+
+When a project has 10+ sessions, avoid trawling through all history in the main context. Instead, use a **research-first** approach that keeps the main agent focused.
+
+#### When to Use This Protocol
+
+- Resuming work on a feature not touched in several sessions
+- Debugging an issue in unfamiliar code
+- Before starting work that might duplicate past decisions
+
+#### The Pattern: Find, Then Read
+
+The goal is NOT to summarize history for the main agent. The goal is to **point the main agent to exactly what it needs to read**.
+
+**Step 1: Research (isolated context)**
+
+Spawn a subagent to explore history and return POINTERS:
+
+```
+Research the history of [feature-id / file / topic] in this project.
+
+Search:
+- features.json for the feature's history.sessions, history.files, history.decisions
+- claude-progress.md for sessions that mention this feature/file
+
+Return (be specific, not summarizing):
+- Which session numbers are relevant (e.g., "Sessions 5, 12, 23")
+- Which files were involved (exact paths)
+- Key decision references (e.g., "Decision [D3] in Session 5")
+- Recommendation: "Read Session 12 for most recent context on this feature"
+
+Do NOT summarize the content. Just tell me WHERE to look.
+```
+
+**Step 2: Targeted Read (main context)**
+
+Main agent then reads ONLY the specific sessions/sections identified:
+
+```bash
+# List all sessions to scan titles quickly
+python3 ~/.claude/skills/long-task-harness/scripts/read_progress.py --list
+
+# Read a specific session by number
+python3 ~/.claude/skills/long-task-harness/scripts/read_progress.py --session 12
+
+# Read the feature's full history
+python3 ~/.claude/skills/long-task-harness/scripts/read_features.py --feature auth-001
+
+# Then read the actual code files identified
+```
+
+#### Why Pointers, Not Summaries
+
+| Approach | Problem |
+|----------|---------|
+| Subagent summarizes everything | Main agent misses nuance; can't verify; "shielded" from relevant context |
+| Main agent reads everything | Context bloat; "dumb zone"; wastes tokens on irrelevant history |
+| **Subagent finds, main agent reads** | Main agent has full context of what matters; exploration waste isolated |
+
+The subagent's job is to be a **scout**, not a **translator**. It maps the terrain so the main agent can navigate directly to what matters.
+
+#### Anti-Patterns
+
+- **Over-using subagents**: For short histories (<10 sessions), just read directly
+- **Trusting summaries blindly**: Always verify critical context by reading source
+- **Anthropomorphizing**: Don't create "history agent" or "decision agent" - it's just context isolation
+- **Skipping human review**: Research can be wrong; review the pointers before acting on them
+
 ### Phase 4: Session Handoff
 
 Before ending a session:
@@ -144,8 +289,10 @@ Before ending a session:
 
 ### assets/
 
-- `features_template.json` - Template for the feature tracking file
-- `progress_template.md` - Template for the progress documentation file
+- `features_template_v2.json` - Template for feature tracking with history (recommended)
+- `progress_template_v2.md` - Template for progress docs with structured metadata (recommended)
+- `features_template.json` - Legacy template (v1, no history tracking)
+- `progress_template.md` - Legacy template (v1, unstructured sessions)
 
 ---
 
