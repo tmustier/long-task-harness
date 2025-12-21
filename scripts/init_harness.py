@@ -3,7 +3,7 @@
 Initialize the long-task-harness structure in the current project.
 
 Creates:
-- claude-progress.md: Work history and session notes
+- long-task-progress.md: Work history and session notes
 - features.json: Testable feature checklist
 - init.sh: Environment setup script (optional)
 """
@@ -26,15 +26,15 @@ def get_skill_dir():
 
 
 def create_progress_file(project_dir: Path, project_name: str):
-    """Create the claude-progress.md file from template."""
+    """Create the long-task-progress.md file from template."""
     # Prefer v2 template if available
     template_path = get_skill_dir() / "assets" / "progress_template_v2.md"
     if not template_path.exists():
         template_path = get_skill_dir() / "assets" / "progress_template.md"
-    output_path = project_dir / "claude-progress.md"
+    output_path = project_dir / "long-task-progress.md"
 
     if output_path.exists():
-        print(f"  ⚠️  claude-progress.md already exists, skipping")
+        print(f"  ⚠️  long-task-progress.md already exists, skipping")
         return
 
     if template_path.exists():
@@ -70,7 +70,7 @@ def create_progress_file(project_dir: Path, project_name: str):
 """
 
     output_path.write_text(content)
-    print(f"  ✅ Created claude-progress.md")
+    print(f"  ✅ Created long-task-progress.md")
 
 
 def create_features_file(project_dir: Path):
@@ -142,26 +142,15 @@ echo "Environment ready!"
     print(f"  ✅ Created init.sh")
 
 
-def check_claude_md(project_dir: Path) -> bool:
-    """Check if CLAUDE.md exists and contains harness instructions."""
-    claude_md = project_dir / "CLAUDE.md"
-    if not claude_md.exists():
-        return False
-    content = claude_md.read_text()
-    return "long-task-harness" in content.lower() or "claude-progress.md" in content
-
-
-def get_claude_md_snippet() -> str:
-    """Return the CLAUDE.md snippet to add."""
-    return '''## Multi-Session Development
-
-This project uses `long-task-harness`. After `/compact` or new sessions:
-
-1. Read `claude-progress.md` for work history
-2. Read `features.json` for feature tracking
-3. Check `git log --oneline -10` for recent commits
-4. Continue from "Next Steps" in the latest session
-'''
+def check_harness_configured(project_dir: Path) -> bool:
+    """Check if CLAUDE.md or AGENTS.md contains harness instructions."""
+    for filename in ["CLAUDE.md", "AGENTS.md"]:
+        filepath = project_dir / filename
+        if filepath.exists():
+            content = filepath.read_text()
+            if "long-task-harness" in content.lower() or "long-task-progress.md" in content:
+                return True
+    return False
 
 
 def main():
@@ -174,28 +163,27 @@ def main():
     create_features_file(project_dir)
     create_init_script(project_dir)
 
-    # Check CLAUDE.md integration
-    has_claude_md_integration = check_claude_md(project_dir)
+    is_configured = check_harness_configured(project_dir)
 
     print(f"""
 ✅ Harness initialized!
 
 Next steps:
 1. Edit features.json to add your project's specific features
-2. Update claude-progress.md with project overview
+2. Update long-task-progress.md with project overview
 3. Customize init.sh for your environment setup
 4. Create an initial git commit: git add . && git commit -m "Initialize long-task-harness"
 
 At the start of each session, read:
-- claude-progress.md for context
+- long-task-progress.md for context
 - features.json for next tasks
 - git log for recent history
 """)
 
-    if not has_claude_md_integration:
-        print("""⚠️  Add this to CLAUDE.md for context reload after /compact:
+    if not is_configured:
+        print("""⚠️  Consider adding harness instructions to AGENTS.md or CLAUDE.md
+   so future sessions automatically invoke this skill.
 """)
-        print(get_claude_md_snippet())
 
 
 if __name__ == "__main__":

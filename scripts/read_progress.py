@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Extract relevant sections from claude-progress.md for session startup.
+Extract relevant sections from long-task-progress.md for session startup.
 
 Default: header sections (Overview, Key Decisions, Current State) + last 3 sessions
 Use -n N for more sessions, --all for everything.
@@ -13,10 +13,10 @@ from pathlib import Path
 
 
 def find_progress_file() -> Path | None:
-    """Find claude-progress.md in current directory or parents."""
+    """Find long-task-progress.md in current directory or parents."""
     cwd = Path.cwd()
     for path in [cwd, *cwd.parents]:
-        progress_file = path / "claude-progress.md"
+        progress_file = path / "long-task-progress.md"
         if progress_file.exists():
             return progress_file
     return None
@@ -24,7 +24,7 @@ def find_progress_file() -> Path | None:
 
 def parse_progress_file(content: str) -> tuple[str, list[tuple[str, str]]]:
     """
-    Parse claude-progress.md into header and sessions.
+    Parse long-task-progress.md into header and sessions.
 
     Returns:
         (header_content, [(session_title, session_content), ...])
@@ -150,7 +150,7 @@ def format_output(header: str, sessions: list[tuple[str, str]],
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Extract relevant sections from claude-progress.md",
+        description="Extract relevant sections from long-task-progress.md",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -170,7 +170,7 @@ Examples:
     parser.add_argument('--session', '-s', type=int,
                         help='Show a specific session by number')
     parser.add_argument('--file', type=Path,
-                        help='Path to claude-progress.md (default: auto-detect)')
+                        help='Path to long-task-progress.md (default: auto-detect)')
 
     args = parser.parse_args()
 
@@ -181,8 +181,8 @@ Examples:
         progress_file = find_progress_file()
 
     if not progress_file or not progress_file.exists():
-        print("Error: claude-progress.md not found", file=sys.stderr)
-        print("Run from a project directory with claude-progress.md, or use --file", file=sys.stderr)
+        print("Error: long-task-progress.md not found", file=sys.stderr)
+        print("Run from a project directory with long-task-progress.md, or use --file", file=sys.stderr)
         sys.exit(1)
 
     # Read and parse

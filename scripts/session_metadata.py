@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate session metadata for claude-progress.md.
+Generate session metadata for long-task-progress.md.
 
 Outputs git metadata (commits, branch, files changed) in a format
 ready to paste into a session entry.
@@ -27,19 +27,19 @@ def run_git(*args) -> str:
 
 
 def find_progress_file() -> Path | None:
-    """Find claude-progress.md in current directory or parents."""
+    """Find long-task-progress.md in current directory or parents."""
     cwd = Path.cwd()
     for path in [cwd, *cwd.parents]:
-        progress_file = path / "claude-progress.md"
+        progress_file = path / "long-task-progress.md"
         if progress_file.exists():
             return progress_file
     return None
 
 
 def get_last_progress_commit() -> str | None:
-    """Get the commit hash where claude-progress.md was last modified."""
+    """Get the commit hash where long-task-progress.md was last modified."""
     result = subprocess.run(
-        ['git', 'log', '-1', '--format=%h', '--', 'claude-progress.md'],
+        ['git', 'log', '-1', '--format=%h', '--', 'long-task-progress.md'],
         capture_output=True,
         text=True
     )
@@ -72,7 +72,7 @@ def get_metadata_since_progress() -> dict:
     last_progress_commit = get_last_progress_commit()
     
     if not last_progress_commit:
-        print("Warning: No previous commits found for claude-progress.md", file=sys.stderr)
+        print("Warning: No previous commits found for long-task-progress.md", file=sys.stderr)
         last_progress_commit = run_git('rev-list', '--max-parents=0', 'HEAD')  # First commit
 
     current_hash = run_git('rev-parse', '--short', 'HEAD')
@@ -100,7 +100,7 @@ def get_metadata_since_progress() -> dict:
 def format_metadata(meta: dict, mode: str) -> str:
     """Format metadata for display."""
     lines = [
-        "Session Metadata (copy to claude-progress.md):",
+        "Session Metadata (copy to long-task-progress.md):",
         "=" * 50,
         ""
     ]
@@ -146,12 +146,12 @@ def format_metadata(meta: dict, mode: str) -> str:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate session metadata for claude-progress.md"
+        description="Generate session metadata for long-task-progress.md"
     )
     parser.add_argument(
         '--since', '-s',
         action='store_true',
-        help='Show changes since last claude-progress.md update (default: staged changes)'
+        help='Show changes since last long-task-progress.md update (default: staged changes)'
     )
 
     args = parser.parse_args()

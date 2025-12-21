@@ -10,7 +10,7 @@ The core problem: AI agents lose context across sessions. Each new context windo
 
 ## Key Features
 
-- **Progress Documentation**: Maintain `claude-progress.md` with structured session logs
+- **Progress Documentation**: Maintain `long-task-progress.md` with structured session logs
 - **Feature Tracking**: Track features in `features.json` with pass/fail status
 - **Context-Efficient Scripts**: Load only recent sessions (~78% context reduction)
 - **Session Hooks**: Auto-remind Claude to invoke the skill; block commits without progress updates
@@ -24,10 +24,14 @@ The core problem: AI agents lose context across sessions. Each new context windo
 
 ## Installation
 
-Clone directly to your skills directory:
+Clone to your preferred skills directory:
 
 ```bash
+# For Claude Code
 gh repo clone tmustier/long-task-harness ~/.claude/skills/long-task-harness
+
+# Or any other location - the skill will use its actual path
+gh repo clone tmustier/long-task-harness ~/my-skills/long-task-harness
 ```
 
 ## Usage
@@ -39,7 +43,7 @@ invoke the long-task-harness skill
 ```
 
 The skill will guide you through:
-1. Initializing progress tracking files (`claude-progress.md`, `features.json`)
+1. Initializing progress tracking files (`long-task-progress.md`, `features.json`)
 2. Creating a feature list for the project
 3. Installing session hooks (optional)
 
@@ -72,23 +76,30 @@ Get git metadata for your session entry:
 python3 ~/.claude/skills/long-task-harness/scripts/session_metadata.py --since
 ```
 
-### Session Hooks
+### Multi-Agent Support
 
-Install hooks to auto-remind Claude at session start:
+The skill works with any agent that can read markdown files:
+
+- **Claude Code**: Install session hooks for automatic invocation
+- **Cursor/Codex/Droid/Pi**: Add harness instructions to AGENTS.md
+
+On first invocation, the skill will prompt you to configure persistent invocation for your agent.
+
+### Session Hooks (Claude Code)
 
 ```bash
-python3 ~/.claude/skills/long-task-harness/scripts/install_hooks.py
+python3 <SKILL_PATH>/scripts/install_hooks.py
 ```
 
 This adds to `.claude/settings.json`:
-- **SessionStart**: Requires Claude to invoke the skill (only skips if explicitly told to)
-- **PreToolUse**: Blocks git commits unless `claude-progress.md` is staged; outputs session metadata
+- **SessionStart**: Requires invoking the skill on new sessions
+- **PreToolUse**: Blocks git commits unless `long-task-progress.md` is staged
 
 ## Files Created
 
 | File | Purpose |
 |------|---------|
-| `claude-progress.md` | Session-by-session work log with structured metadata |
+| `long-task-progress.md` | Session-by-session work log with structured metadata |
 | `features.json` | Feature checklist with history tracking (v2 format) |
 
 ## Scripts

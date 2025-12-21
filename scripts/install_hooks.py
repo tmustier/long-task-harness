@@ -4,7 +4,7 @@ Install session continuity hooks for long-task-harness.
 
 Installs project-local hooks in .claude/settings.json that:
 - Remind to invoke long-task-harness skill on session start (unless user opts out)
-- Remind to update claude-progress.md before git commits
+- Remind to update long-task-progress.md before git commits
 """
 
 import json
@@ -129,7 +129,7 @@ def uninstall_hooks(project_dir: Path) -> bool:
             keep = True
             for hook in hook_group.get("hooks", []):
                 cmd = hook.get("command", "")
-                if "long-task-harness" in cmd or "claude-progress.md" in cmd:
+                if "long-task-harness" in cmd or "long-task-progress.md" in cmd:
                     keep = False
                     modified = True
                     break

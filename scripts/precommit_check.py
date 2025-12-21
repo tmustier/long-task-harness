@@ -2,7 +2,7 @@
 """
 Pre-commit hook for long-task-harness.
 
-Checks if claude-progress.md is staged and outputs session metadata.
+Checks if long-task-progress.md is staged and outputs session metadata.
 Called by Claude Code's PreToolUse hook on git commit commands.
 
 Input: JSON on stdin with tool_input.command
@@ -61,7 +61,7 @@ def format_metadata(meta: dict) -> str:
     """Format metadata for display."""
     lines = [
         "",
-        "Session Metadata (for claude-progress.md):",
+        "Session Metadata (for long-task-progress.md):",
         f"  Commits: {meta['last_hash']}..HEAD",
         f"  Branch: {meta['branch']}",
         "  Files Changed:"
@@ -90,18 +90,18 @@ def main():
     metadata_str = format_metadata(meta)
 
     # Check if progress.md is staged
-    progress_staged = 'claude-progress.md' in meta['staged_files']
+    progress_staged = 'long-task-progress.md' in meta['staged_files']
 
     if progress_staged:
-        print(f"[OK] claude-progress.md is staged.{metadata_str}", file=sys.stderr)
+        print(f"[OK] long-task-progress.md is staged.{metadata_str}", file=sys.stderr)
         sys.exit(0)
     else:
-        print(f"""BLOCKED: claude-progress.md not staged.
+        print(f"""BLOCKED: long-task-progress.md not staged.
 {metadata_str}
 
 Steps:
-1. Update claude-progress.md with session notes (include metadata above)
-2. git add claude-progress.md
+1. Update long-task-progress.md with session notes (include metadata above)
+2. git add long-task-progress.md
 3. git commit""", file=sys.stderr)
         sys.exit(2)
 
