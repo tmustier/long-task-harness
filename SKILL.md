@@ -19,16 +19,9 @@ Invoke this skill when:
 
 ## First-Time Setup
 
-**On first invocation**, if `claude-progress.md` doesn't exist, offer two optional configurations:
+**On first invocation**, if `claude-progress.md` doesn't exist, offer configuration based on the agent being used:
 
-### Option 1: CLAUDE.md Integration
-
-Prompt:
-> "Would you like me to add harness instructions to CLAUDE.md? This ensures context reloads after `/compact`."
-
-If yes, add the snippet from "CLAUDE.md Integration" below.
-
-### Option 2: Session Continuity Hooks (Recommended)
+### For Claude Code: Session Hooks (Recommended)
 
 Prompt:
 > "Would you like me to install session continuity hooks?
@@ -53,6 +46,48 @@ This installs project-local hooks to `.claude/settings.json` that:
 | PreToolUse | Before `git commit` | Blocks unless `claude-progress.md` is staged |
 
 To remove hooks later: `python3 scripts/install_hooks.py --uninstall`
+
+### For Cursor (1.7+): Cursor Hooks
+
+Prompt:
+> "Would you like me to install Cursor hooks for session continuity?
+>
+> This creates `.cursor/hooks.json` with an `afterFileEdit` hook that reminds you to update progress tracking before commits."
+
+If yes, run:
+```bash
+python3 scripts/install_cursor_hooks.py
+```
+
+To remove: `python3 scripts/install_cursor_hooks.py --uninstall`
+
+### For Codex/Droid/Pi: AGENTS.md Instructions
+
+For agents that use AGENTS.md for persistent instructions (Codex, Droid, Pi-agent):
+
+Prompt:
+> "Would you like me to add session continuity instructions to AGENTS.md?
+>
+> This ensures you follow the harness protocol across sessions. The instructions tell you to:
+> - Read progress files at session start
+> - Update them before commits
+> - Document session notes before ending"
+
+If yes, run:
+```bash
+python3 scripts/install_agents_md.py
+```
+
+To check status: `python3 scripts/install_agents_md.py --check`
+To remove: `python3 scripts/install_agents_md.py --uninstall`
+
+### Optional: CLAUDE.md Integration (Claude Code)
+
+For Claude Code users who also want `/compact` resilience:
+
+> "Would you like me to add harness instructions to CLAUDE.md? This ensures context reloads after `/compact`."
+
+If yes, add the snippet from "CLAUDE.md Integration" below.
 
 ## Workflow
 
@@ -279,7 +314,10 @@ Before ending a session:
 ### scripts/
 
 - `init_harness.py` - Initializes the harness structure in the current project
-- `install_hooks.py` - Installs/uninstalls session continuity hooks to `.claude/settings.json`
+- `install_hooks.py` - Installs/uninstalls Claude Code hooks to `.claude/settings.json`
+- `install_cursor_hooks.py` - Installs/uninstalls Cursor hooks to `.cursor/hooks.json`
+- `install_agents_md.py` - Adds/removes harness instructions in AGENTS.md (for Codex/Droid/Pi)
+- `cursor_after_edit.py` - Cursor afterFileEdit hook script
 - `read_progress.py` - Extracts sessions from claude-progress.md (`--list`, `--session N`)
 - `read_features.py` - Shows features from features.json (`--feature ID`, `--json`)
 - `session_metadata.py` - Generates git metadata for session entries
@@ -295,6 +333,7 @@ Before ending a session:
 - `progress_template_v2.md` - Template for progress docs with structured metadata (recommended)
 - `features_template.json` - Legacy template (v1, no history tracking)
 - `progress_template.md` - Legacy template (v1, unstructured sessions)
+- `agents_md_instructions.md` - AGENTS.md snippet for Codex/Droid/Pi agents
 
 ---
 
