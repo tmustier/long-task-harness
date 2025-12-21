@@ -1,13 +1,13 @@
 ---
 name: long-task-harness
-description: Maintains continuity across long-running tasks that span multiple Claude Code sessions. This skill should be used when starting a complex project that will require multiple sessions to complete, or when resuming work on an existing multi-session project. Provides structured workflows for progress documentation, feature tracking, and session handoff protocols.
+description: Maintains continuity across long-running tasks that span multiple agent sessions. This skill should be used when starting a complex project that will require multiple sessions to complete, or when resuming work on an existing multi-session project. Provides structured workflows for progress documentation, feature tracking, and session handoff protocols.
 ---
 
 # Long Task Harness
 
 ## Overview
 
-This skill provides structured workflows for maintaining continuity across long-running tasks that span multiple Claude Code sessions. It addresses the "shift change" problem where context is lost between sessions by establishing progress documentation, feature tracking, and session startup protocols.
+This skill provides structured workflows for maintaining continuity across long-running tasks that span multiple agent sessions. It addresses the "shift change" problem where context is lost between sessions by establishing progress documentation, feature tracking, and session startup protocols.
 
 ## When to Use This Skill
 

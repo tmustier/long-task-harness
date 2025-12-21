@@ -1,6 +1,6 @@
 # Long Task Harness
 
-A Claude Code skill for maintaining continuity across long-running tasks that span multiple sessions.
+A skill for filesystem-based agents to maintain continuity across long-running tasks that span multiple sessions.
 
 ## About
 
