@@ -1,0 +1,175 @@
+#!/usr/bin/env python3
+"""
+Generate session metadata for claude-progress.md.
+
+Outputs git metadata (commits, branch, files changed) in a format
+ready to paste into a session entry.
+
+Usage:
+  python3 session_metadata.py           # Metadata for staged changes
+  python3 session_metadata.py --since   # Metadata since last progress.md update
+"""
+
+import argparse
+import subprocess
+import sys
+from pathlib import Path
+
+
+def run_git(*args) -> str:
+    """Run a git command and return stdout."""
+    result = subprocess.run(
+        ['git'] + list(args),
+        capture_output=True,
+        text=True
+    )
+    return result.stdout.strip() if result.returncode == 0 else ''
+
+
+def find_progress_file() -> Path | None:
+    """Find claude-progress.md in current directory or parents."""
+    cwd = Path.cwd()
+    for path in [cwd, *cwd.parents]:
+        progress_file = path / "claude-progress.md"
+        if progress_file.exists():
+            return progress_file
+    return None
+
+
+def get_last_progress_commit() -> str | None:
+    """Get the commit hash where claude-progress.md was last modified."""
+    result = subprocess.run(
+        ['git', 'log', '-1', '--format=%h', '--', 'claude-progress.md'],
+        capture_output=True,
+        text=True
+    )
+    return result.stdout.strip() if result.returncode == 0 and result.stdout.strip() else None
+
+
+def get_metadata_staged() -> dict:
+    """Get metadata for currently staged changes."""
+    # Staged files
+    staged_files = run_git('diff', '--cached', '--name-only').split('\n')
+    staged_files = [f for f in staged_files if f]
+
+    # Diff stats for staged
+    diffstat = run_git('diff', '--cached', '--stat')
+    file_changes = []
+    for line in diffstat.split('\n')[:-1]:  # Skip summary
+        if line.strip():
+            file_changes.append(line.strip())
+
+    return {
+        'last_hash': run_git('rev-parse', '--short', 'HEAD'),
+        'branch': run_git('branch', '--show-current'),
+        'file_changes': file_changes,
+        'commit_range': f"{run_git('rev-parse', '--short', 'HEAD')}..staged"
+    }
+
+
+def get_metadata_since_progress() -> dict:
+    """Get metadata for changes since last progress.md update."""
+    last_progress_commit = get_last_progress_commit()
+    
+    if not last_progress_commit:
+        print("Warning: No previous commits found for claude-progress.md", file=sys.stderr)
+        last_progress_commit = run_git('rev-list', '--max-parents=0', 'HEAD')  # First commit
+
+    current_hash = run_git('rev-parse', '--short', 'HEAD')
+    
+    # Get diff stats since last progress commit
+    diffstat = run_git('diff', '--stat', f'{last_progress_commit}..HEAD')
+    file_changes = []
+    for line in diffstat.split('\n')[:-1]:  # Skip summary
+        if line.strip():
+            file_changes.append(line.strip())
+
+    # Get commit count
+    commit_count = run_git('rev-list', '--count', f'{last_progress_commit}..HEAD')
+
+    return {
+        'last_hash': last_progress_commit,
+        'current_hash': current_hash,
+        'branch': run_git('branch', '--show-current'),
+        'file_changes': file_changes,
+        'commit_range': f"{last_progress_commit}..{current_hash}",
+        'commit_count': commit_count
+    }
+
+
+def format_metadata(meta: dict, mode: str) -> str:
+    """Format metadata for display."""
+    lines = [
+        "Session Metadata (copy to claude-progress.md):",
+        "=" * 50,
+        ""
+    ]
+
+    if mode == 'since':
+        lines.append(f"Commits: {meta['commit_range']} ({meta.get('commit_count', '?')} commits)")
+    else:
+        lines.append(f"Commits: {meta['commit_range']}")
+    
+    lines.append(f"Branch: {meta['branch']}")
+    lines.append("")
+    lines.append("Files Changed:")
+    
+    for change in meta['file_changes']:
+        lines.append(f"  - {change}")
+
+    if not meta['file_changes']:
+        lines.append("  (no changes)")
+
+    lines.append("")
+    lines.append("=" * 50)
+    
+    # Also output in template format
+    lines.append("")
+    lines.append("Template format for session header:")
+    lines.append(f"### Session N | YYYY-MM-DD | Commits: {meta['commit_range']}")
+    lines.append("")
+    lines.append("#### Metadata")
+    lines.append("- **Features**: [feature-id (status)]")
+    lines.append("- **Files Changed**:")
+    for change in meta['file_changes'][:5]:  # First 5
+        # Parse the diffstat format: "file.py | 10 ++"
+        parts = change.split('|')
+        if len(parts) >= 2:
+            filename = parts[0].strip()
+            stats = parts[1].strip()
+            lines.append(f"  - `{filename}` ({stats})")
+    if len(meta['file_changes']) > 5:
+        lines.append(f"  - ... and {len(meta['file_changes']) - 5} more files")
+
+    return '\n'.join(lines)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Generate session metadata for claude-progress.md"
+    )
+    parser.add_argument(
+        '--since', '-s',
+        action='store_true',
+        help='Show changes since last claude-progress.md update (default: staged changes)'
+    )
+
+    args = parser.parse_args()
+
+    # Check we're in a git repo
+    if not run_git('rev-parse', '--git-dir'):
+        print("Error: Not in a git repository", file=sys.stderr)
+        sys.exit(1)
+
+    if args.since:
+        meta = get_metadata_since_progress()
+        mode = 'since'
+    else:
+        meta = get_metadata_staged()
+        mode = 'staged'
+
+    print(format_metadata(meta, mode))
+
+
+if __name__ == "__main__":
+    main()

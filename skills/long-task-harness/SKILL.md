@@ -280,8 +280,10 @@ Before ending a session:
 
 - `init_harness.py` - Initializes the harness structure in the current project
 - `install_hooks.py` - Installs/uninstalls session continuity hooks to `.claude/settings.json`
-- `read_progress.py` - Extracts header + recent sessions from claude-progress.md (use at session start)
-- `read_features.py` - Shows incomplete features (full) + completed (names) from features.json
+- `read_progress.py` - Extracts sessions from claude-progress.md (`--list`, `--session N`)
+- `read_features.py` - Shows features from features.json (`--feature ID`, `--json`)
+- `session_metadata.py` - Generates git metadata for session entries
+- `precommit_check.py` - Pre-commit hook that enforces progress.md staging and outputs metadata
 
 ### references/
 
