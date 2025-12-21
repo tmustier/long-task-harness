@@ -24,12 +24,10 @@ The core problem: AI agents lose context across sessions. Each new context windo
 
 ## Installation
 
-Clone and copy to your skills directory:
+Clone directly to your skills directory:
 
 ```bash
-gh repo clone tmustier/long-task-harness /tmp/lth && \
-  cp -r /tmp/lth/skills/long-task-harness ~/.claude/skills/ && \
-  rm -rf /tmp/lth
+gh repo clone tmustier/long-task-harness ~/.claude/skills/long-task-harness
 ```
 
 ## Usage
