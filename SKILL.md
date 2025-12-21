@@ -1,6 +1,5 @@
 ---
 name: long-task-harness
-version: 0.2.0
 description: Maintains continuity across long-running tasks that span multiple agent sessions. This skill should be used when starting a complex project that will require multiple sessions to complete, or when resuming work on an existing multi-session project. Provides structured workflows for progress documentation, feature tracking, and session handoff protocols.
 ---
 
