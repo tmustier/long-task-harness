@@ -88,9 +88,22 @@ Then continue from "Next Steps" in the latest session entry.
 #### Decisions
 - **[D1]** Decision made - reasoning
 
+#### Surprises
+- **[S1]** Expected X but found Y - implication
+
 #### Next Steps
 1. Priority task
 ```
+
+### Why Log Surprises?
+
+Surprises indicate model uncertainty and contain information-dense context. If something surprised you, it could trip up the next session (or a different agent). Examples:
+
+- **[S1]** Expected `auth.py` to handle OAuth, but it only does API keys. OAuth is in `oauth_provider.py`.
+- **[S2]** Test suite requires Docker running - not documented in README.
+- **[S3]** Config file is gitignored but required - must copy from `config.example.yaml`.
+
+This section is optional but valuable for complex or unfamiliar codebases.
 
 ## Before Ending Session
 
