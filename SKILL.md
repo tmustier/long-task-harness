@@ -115,6 +115,7 @@ Then continue from "Next Steps" in the latest session entry.
 | `read_features.py` | Read features (`--feature ID`, `--json`) |
 | `session_metadata.py` | Generate git metadata for session entries |
 | `claude_code_precommit_check.py` | Pre-commit hook (warns + suggests amend) |
+| `generate_manifest.py` | Generate `.manifest.yaml` for progressive codebase disclosure |
 
 ## History Research (10+ Sessions)
 
@@ -126,3 +127,19 @@ Return POINTERS (session numbers, file paths, decision refs) - not summaries.
 ```
 
 Then read only the specific sessions identified.
+
+## Progressive Codebase Disclosure
+
+For unfamiliar codebases, generate a manifest before diving in:
+
+```bash
+python3 <SKILL_PATH>/scripts/generate_manifest.py [directory]
+```
+
+This creates `.manifest.yaml` with:
+- File purposes (from docstrings)
+- Exports (classes, functions)
+- Dependencies (imports)
+- Size hints (small/medium/large)
+
+**Read the manifest first**, then dive into specific files. This avoids wasting tokens on files you don't need.
