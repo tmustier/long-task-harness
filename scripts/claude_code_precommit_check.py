@@ -105,17 +105,14 @@ def main():
         print(f"[OK] long-task-progress.md is staged.{metadata_str}", file=sys.stderr)
         sys.exit(0)
     else:
-        # Allow commit but warn - recommend amending to include progress update
+        # Allow commit but warn - recommend follow-up commit for progress update
         print(f"""[WARNING] long-task-progress.md not staged.
 {metadata_str}
 
-After this commit completes, update progress and amend:
+Remember to update progress after this commit:
 1. Update .long-task-harness/long-task-progress.md with session notes
-   (include commit hash from this commit)
 2. git add .long-task-harness/long-task-progress.md
-3. git commit --amend --no-edit
-
-This keeps your progress update in the same commit.""", file=sys.stderr)
+3. git commit -m "docs: update session progress" """, file=sys.stderr)
         sys.exit(0)
 
 

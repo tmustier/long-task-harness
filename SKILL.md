@@ -48,7 +48,7 @@ For Claude Code users who want automatic enforcement:
 
 > "Would you like to install Claude Code hooks? These will:
 > - Remind to invoke this skill on session start
-> - Warn before git commits if `.long-task-harness/long-task-progress.md` not staged (with amend guidance)"
+> - Warn before git commits if `.long-task-harness/long-task-progress.md` not staged"
 
 If yes: `python3 <SKILL_PATH>/scripts/claude_code_install_hooks.py`
 
@@ -114,7 +114,7 @@ Then continue from "Next Steps" in the latest session entry.
 | `read_progress.py` | Read sessions (`--list`, `--session N`, `-n 5`) |
 | `read_features.py` | Read features (`--feature ID`, `--json`) |
 | `session_metadata.py` | Generate git metadata for session entries |
-| `claude_code_precommit_check.py` | Pre-commit hook (warns + suggests amend) |
+| `claude_code_precommit_check.py` | Pre-commit hook (warns if progress not staged) |
 | `generate_manifest.py` | Generate `.manifest.yaml` for progressive codebase disclosure |
 
 ## History Research (10+ Sessions)

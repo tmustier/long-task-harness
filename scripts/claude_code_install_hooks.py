@@ -4,7 +4,7 @@ Install Claude Code hooks for long-task-harness.
 
 Installs project-local hooks in .claude/settings.json that:
 - Remind to invoke long-task-harness skill on session start (unless user opts out)
-- Warn to update long-task-progress.md before git commits (with amend guidance)
+- Warn to update long-task-progress.md before git commits
 
 Note: These hooks are for Claude Code only. Other agents (Cursor, Codex, Droid, etc.)
 should use AGENTS.md instructions instead.

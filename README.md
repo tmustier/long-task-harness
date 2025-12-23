@@ -18,7 +18,7 @@ The core problem: AI agents lose context across sessions. Each new context windo
 ### New in v0.3.0
 
 - **Cleaner File Layout**: All harness files in `.long-task-harness/` directory
-- **Improved Commit Flow**: Pre-commit warns + suggests `--amend` instead of blocking
+- **Improved Commit Flow**: Pre-commit warns instead of blocking
 - **Renamed Hooks Script**: `claude_code_install_hooks.py` (clarifies Claude Code-only)
 
 ### From v0.2.0
@@ -99,7 +99,7 @@ python3 <SKILL_PATH>/scripts/claude_code_install_hooks.py
 
 This adds to `.claude/settings.json`:
 - **SessionStart**: Reminds to invoke the skill on new sessions
-- **PreToolUse**: Warns if `.long-task-harness/long-task-progress.md` not staged, suggests amending
+- **PreToolUse**: Warns if `.long-task-harness/long-task-progress.md` not staged
 
 ## Files Created
 
@@ -120,7 +120,7 @@ All files are created in `.long-task-harness/` directory:
 | `read_features.py` | Read features (`--feature ID`, `--json`) |
 | `session_metadata.py` | Generate git metadata for session entries |
 | `claude_code_install_hooks.py` | Install/uninstall Claude Code hooks |
-| `claude_code_precommit_check.py` | Pre-commit hook (warns + suggests amend) |
+| `claude_code_precommit_check.py` | Pre-commit hook (warns if progress not staged) |
 
 ## License
 
