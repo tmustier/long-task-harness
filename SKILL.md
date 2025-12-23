@@ -9,7 +9,7 @@ Structured workflows for maintaining continuity across agent sessions. Addresses
 
 ## First-Time Setup
 
-**On first invocation**, check if `long-task-progress.md` exists in the project.
+**On first invocation**, check if `.long-task-harness/long-task-progress.md` exists in the project.
 
 ### If it doesn't exist: Initialize
 
@@ -17,9 +17,10 @@ Structured workflows for maintaining continuity across agent sessions. Addresses
 python3 <SKILL_PATH>/scripts/init_harness.py
 ```
 
-This creates:
+This creates a `.long-task-harness/` directory containing:
 - `long-task-progress.md` - Session history and notes
 - `features.json` - Feature tracking with pass/fail status
+- `init.sh` - Environment setup script (optional)
 
 ### Then: Ensure persistent invocation
 
@@ -45,11 +46,13 @@ Use the actual path where you loaded this skill from for `<SKILL_PATH>`.
 
 For Claude Code users who want automatic enforcement:
 
-> "Would you like to install session hooks? These will:
-> - Require invoking this skill on session start
-> - Block git commits unless `long-task-progress.md` is staged"
+> "Would you like to install Claude Code hooks? These will:
+> - Remind to invoke this skill on session start
+> - Warn before git commits if `.long-task-harness/long-task-progress.md` not staged (with amend guidance)"
 
-If yes: `python3 <SKILL_PATH>/scripts/install_hooks.py`
+If yes: `python3 <SKILL_PATH>/scripts/claude_code_install_hooks.py`
+
+Note: These hooks are for Claude Code only. Other agents should use AGENTS.md instructions.
 
 ## Session Startup Protocol
 
@@ -67,8 +70,8 @@ Then continue from "Next Steps" in the latest session entry.
 
 1. Work on **one feature** at a time
 2. Commit frequently with descriptive messages
-3. Update `features.json` when features pass tests
-4. Update `long-task-progress.md` before ending session
+3. Update `.long-task-harness/features.json` when features pass tests
+4. Update `.long-task-harness/long-task-progress.md` before ending session
 
 ## Session Entry Format
 
@@ -91,7 +94,7 @@ Then continue from "Next Steps" in the latest session entry.
 
 ## Before Ending Session
 
-1. Update `long-task-progress.md` with session notes
+1. Update `.long-task-harness/long-task-progress.md` with session notes
 2. Commit all changes including progress docs
 3. Verify tests pass
 
@@ -106,12 +109,12 @@ Then continue from "Next Steps" in the latest session entry.
 
 | Script | Purpose |
 |--------|---------|
-| `init_harness.py` | Initialize project with tracking files |
-| `install_hooks.py` | Install/uninstall Claude Code hooks |
+| `init_harness.py` | Initialize project with tracking files in `.long-task-harness/` |
+| `claude_code_install_hooks.py` | Install/uninstall Claude Code hooks |
 | `read_progress.py` | Read sessions (`--list`, `--session N`, `-n 5`) |
 | `read_features.py` | Read features (`--feature ID`, `--json`) |
 | `session_metadata.py` | Generate git metadata for session entries |
-| `precommit_check.py` | Pre-commit hook enforcement |
+| `claude_code_precommit_check.py` | Pre-commit hook (warns + suggests amend) |
 
 ## History Research (10+ Sessions)
 

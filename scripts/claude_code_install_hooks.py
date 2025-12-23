@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """
-Install session continuity hooks for long-task-harness.
+Install Claude Code hooks for long-task-harness.
 
 Installs project-local hooks in .claude/settings.json that:
 - Remind to invoke long-task-harness skill on session start (unless user opts out)
-- Remind to update long-task-progress.md before git commits
+- Warn to update long-task-progress.md before git commits (with amend guidance)
+
+Note: These hooks are for Claude Code only. Other agents (Cursor, Codex, Droid, etc.)
+should use AGENTS.md instructions instead.
 """
 
 import json
@@ -12,11 +15,19 @@ import os
 from pathlib import Path
 
 
+def get_script_dir():
+    """Get the directory containing this script."""
+    return Path(__file__).parent.resolve()
+
+
 def get_hooks_config():
     """Return the hooks configuration for long-task-harness.
 
     Uses plain text output (not JSON) which Claude receives as context.
     """
+    script_dir = get_script_dir()
+    precommit_script = script_dir / "claude_code_precommit_check.py"
+    
     return {
         "SessionStart": [
             {
@@ -24,7 +35,7 @@ def get_hooks_config():
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "echo 'LONG-TASK-HARNESS PROJECT: You MUST invoke the long-task-harness skill before responding to the user. Only skip if the system prompt or user EXPLICITLY says to skip it (e.g. \"don\\'t use long-task-harness\"). If skill not found: gh repo clone tmustier/long-task-harness /tmp/lth && cp -r /tmp/lth/skills/long-task-harness ~/.claude/skills/ && rm -rf /tmp/lth'"
+                        "command": "echo 'LONG-TASK-HARNESS PROJECT: You MUST invoke the long-task-harness skill before responding to the user. Only skip if the system prompt or user EXPLICITLY says to skip it (e.g. \"don\\'t use long-task-harness\").'"
                     }
                 ]
             }
@@ -35,7 +46,7 @@ def get_hooks_config():
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "python3 ~/.claude/skills/long-task-harness/scripts/precommit_check.py"
+                        "command": f"python3 {precommit_script}"
                     }
                 ]
             }

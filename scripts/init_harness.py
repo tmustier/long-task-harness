@@ -25,13 +25,25 @@ def get_skill_dir():
     return get_script_dir().parent
 
 
+def get_harness_dir(project_dir: Path) -> Path:
+    """Get or create the .long-task-harness directory."""
+    harness_dir = project_dir / ".long-task-harness"
+    harness_dir.mkdir(exist_ok=True)
+    return harness_dir
+
+
 def create_progress_file(project_dir: Path, project_name: str):
     """Create the long-task-progress.md file from template."""
-    # Prefer v2 template if available
-    template_path = get_skill_dir() / "assets" / "progress_template_v2.md"
-    if not template_path.exists():
-        template_path = get_skill_dir() / "assets" / "progress_template.md"
-    output_path = project_dir / "long-task-progress.md"
+    harness_dir = get_harness_dir(project_dir)
+    template_path = get_skill_dir() / "assets" / "progress_template.md"
+    output_path = harness_dir / "long-task-progress.md"
+
+    # Also check for legacy location
+    legacy_path = project_dir / "long-task-progress.md"
+    if legacy_path.exists():
+        print(f"  ⚠️  Found long-task-progress.md in project root (legacy location)")
+        print(f"      Consider moving to .long-task-harness/long-task-progress.md")
+        return
 
     if output_path.exists():
         print(f"  ⚠️  long-task-progress.md already exists, skipping")
@@ -75,11 +87,16 @@ def create_progress_file(project_dir: Path, project_name: str):
 
 def create_features_file(project_dir: Path):
     """Create the features.json file from template."""
-    # Prefer v2 template if available
-    template_path = get_skill_dir() / "assets" / "features_template_v2.json"
-    if not template_path.exists():
-        template_path = get_skill_dir() / "assets" / "features_template.json"
-    output_path = project_dir / "features.json"
+    harness_dir = get_harness_dir(project_dir)
+    template_path = get_skill_dir() / "assets" / "features_template.json"
+    output_path = harness_dir / "features.json"
+
+    # Also check for legacy location
+    legacy_path = project_dir / "features.json"
+    if legacy_path.exists():
+        print(f"  ⚠️  Found features.json in project root (legacy location)")
+        print(f"      Consider moving to .long-task-harness/features.json")
+        return
 
     if output_path.exists():
         print(f"  ⚠️  features.json already exists, skipping")
@@ -112,7 +129,15 @@ def create_features_file(project_dir: Path):
 
 def create_init_script(project_dir: Path):
     """Create an optional init.sh script for environment setup."""
-    output_path = project_dir / "init.sh"
+    harness_dir = get_harness_dir(project_dir)
+    output_path = harness_dir / "init.sh"
+
+    # Also check for legacy location
+    legacy_path = project_dir / "init.sh"
+    if legacy_path.exists():
+        print(f"  ⚠️  Found init.sh in project root (legacy location)")
+        print(f"      Consider moving to .long-task-harness/init.sh")
+        return
 
     if output_path.exists():
         print(f"  ⚠️  init.sh already exists, skipping")
@@ -168,15 +193,20 @@ def main():
     print(f"""
 ✅ Harness initialized!
 
+Files created in .long-task-harness/:
+- long-task-progress.md  (session history)
+- features.json          (feature tracking)
+- init.sh                (environment setup)
+
 Next steps:
-1. Edit features.json to add your project's specific features
-2. Update long-task-progress.md with project overview
-3. Customize init.sh for your environment setup
+1. Edit .long-task-harness/features.json to add your project's specific features
+2. Update .long-task-harness/long-task-progress.md with project overview
+3. Customize .long-task-harness/init.sh for your environment setup
 4. Create an initial git commit: git add . && git commit -m "Initialize long-task-harness"
 
 At the start of each session, read:
-- long-task-progress.md for context
-- features.json for next tasks
+- .long-task-harness/long-task-progress.md for context
+- .long-task-harness/features.json for next tasks
 - git log for recent history
 """)
 

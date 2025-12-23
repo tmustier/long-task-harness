@@ -13,12 +13,21 @@ from pathlib import Path
 
 
 def find_progress_file() -> Path | None:
-    """Find long-task-progress.md in current directory or parents."""
+    """Find long-task-progress.md in current directory or parents.
+    
+    Checks .long-task-harness/ first (new location), then falls back to
+    project root (legacy location).
+    """
     cwd = Path.cwd()
     for path in [cwd, *cwd.parents]:
-        progress_file = path / "long-task-progress.md"
-        if progress_file.exists():
-            return progress_file
+        # Check new location first
+        new_location = path / ".long-task-harness" / "long-task-progress.md"
+        if new_location.exists():
+            return new_location
+        # Fall back to legacy location
+        legacy_location = path / "long-task-progress.md"
+        if legacy_location.exists():
+            return legacy_location
     return None
 
 

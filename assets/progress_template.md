@@ -12,7 +12,7 @@
 
 ### Key Decisions
 
-[Document important architectural or design decisions]
+[Document important architectural or design decisions - reference session numbers]
 
 ---
 
@@ -33,59 +33,93 @@
 
 ## Session Log
 
-### Session 1 - {{DATE}}
+### Session 1 | {{DATE}} | Commits: [first..last]
 
-**Goal**: Project initialization and setup
+#### Metadata
+- **Features**: setup-001 (started)
+- **Files Changed**: 
+  - `package.json` (+15/-0) - initial dependencies
+  - `src/index.ts` (+45/-0) - entry point
+- **Commit Summary**: `init: project scaffold`, `feat: add base config`
 
-**Context**:
-[Describe the starting context - what existed before, what's the environment]
+#### Goal
+Project initialization and setup
 
-**Accomplished**:
-- [ ] Initialized long-task-harness structure
-- [ ] Created initial feature list
-- [ ] [Add other accomplishments]
+#### Accomplished
+- [x] Initialized long-task-harness structure
+- [x] Created initial feature list
+- [ ] [Incomplete task carried forward]
 
-**Key Code Changes**:
-- [List significant files modified]
+#### Decisions
+- **[D1]** Chose TypeScript over JavaScript for type safety
+- **[D2]** Using pnpm over npm for faster installs
 
-**Decisions Made**:
-- [Document any decisions and rationale]
+#### Context & Learnings
+[What you learned, gotchas encountered, why things were done a certain way]
 
-**Next Steps**:
-1. [First priority]
+#### Next Steps
+1. [First priority] → likely affects: feature-001
 2. [Second priority]
-3. [Third priority]
-
-**Blockers/Questions**:
-- [List anything blocking progress]
 
 ---
 
 <!--
-Template for new sessions - copy this block:
+=============================================================================
+SESSION TEMPLATE - Copy below this line for new sessions
+=============================================================================
 
-### Session N - YYYY-MM-DD
+### Session N | YYYY-MM-DD | Commits: abc123..def456
 
-**Goal**: [What you're trying to accomplish]
+#### Metadata
+- **Features**: feature-id (started|progressed|completed|blocked)
+- **Files Changed**: 
+  - `path/to/file.ts` (+lines/-lines) - brief description
+- **Commit Summary**: `type: message`, `type: message`
 
-**Context**:
-[Read previous session notes, git log, features.json before starting]
+#### Goal
+[One-liner: what you're trying to accomplish this session]
 
-**Accomplished**:
-- [ ] [Task 1]
-- [ ] [Task 2]
+#### Accomplished
+- [x] Completed task
+- [ ] Incomplete task (carried forward)
 
-**Key Code Changes**:
-- [Files modified]
+#### Decisions
+- **[DN]** Decision made and rationale (reference in features.json)
 
-**Decisions Made**:
-- [Decisions and rationale]
+#### Context & Learnings
+[What you learned, gotchas, context future sessions need to know.
+Focus on WHAT and WHY, not the struggle/errors along the way.]
 
-**Next Steps**:
-1. [Priority 1]
+#### Next Steps
+1. [Priority 1] → likely affects: feature-id
 2. [Priority 2]
 
-**Blockers/Questions**:
-- [Blockers]
+=============================================================================
+GUIDELINES FOR GOOD SESSION ENTRIES
+=============================================================================
+
+1. METADATA is for machines (subagent lookup)
+   - Always list features touched with status
+   - Always list files with change magnitude
+   - Always include commit range or hashes
+
+2. DECISIONS are for continuity
+   - Number them [D1], [D2] so they can be referenced
+   - Copy key decisions to features.json history
+   - Include rationale, not just the choice
+
+3. CONTEXT is for future you/agents
+   - Capture the WHY behind non-obvious choices
+   - Note gotchas and edge cases discovered
+   - Omit error-correction loops - just document resolution
+
+4. COMMIT SUMMARY style
+   - Use conventional commits: feat|fix|refactor|test|docs|chore
+   - Keep to one-liners that scan quickly
+
+5. Keep sessions BOUNDED
+   - One session = one work period (not one feature)
+   - If session runs long, split into multiple entries
+   - Target: scannable in <30 seconds
 
 -->

@@ -13,12 +13,21 @@ from pathlib import Path
 
 
 def find_features_file() -> Path | None:
-    """Find features.json in current directory or parents."""
+    """Find features.json in current directory or parents.
+    
+    Checks .long-task-harness/ first (new location), then falls back to
+    project root (legacy location).
+    """
     cwd = Path.cwd()
     for path in [cwd, *cwd.parents]:
-        features_file = path / "features.json"
-        if features_file.exists():
-            return features_file
+        # Check new location first
+        new_location = path / ".long-task-harness" / "features.json"
+        if new_location.exists():
+            return new_location
+        # Fall back to legacy location
+        legacy_location = path / "features.json"
+        if legacy_location.exists():
+            return legacy_location
     return None
 
 

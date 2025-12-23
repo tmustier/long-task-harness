@@ -6,7 +6,7 @@ Checks if long-task-progress.md is staged and outputs session metadata.
 Called by Claude Code's PreToolUse hook on git commit commands.
 
 Input: JSON on stdin with tool_input.command
-Output: Metadata on stderr, exit code 0 (allow) or 2 (block)
+Output: Metadata on stderr, exit code 0 (allow with warning or success)
 """
 
 import json
@@ -71,6 +71,15 @@ def format_metadata(meta: dict) -> str:
     return '\n'.join(lines)
 
 
+def is_progress_staged(staged_files: list) -> bool:
+    """Check if progress file is staged (supports both old and new locations)."""
+    progress_paths = [
+        'long-task-progress.md',
+        '.long-task-harness/long-task-progress.md'
+    ]
+    return any(p in staged_files for p in progress_paths)
+
+
 def main():
     # Parse input from Claude Code hook
     try:
@@ -90,20 +99,24 @@ def main():
     metadata_str = format_metadata(meta)
 
     # Check if progress.md is staged
-    progress_staged = 'long-task-progress.md' in meta['staged_files']
+    progress_staged = is_progress_staged(meta['staged_files'])
 
     if progress_staged:
         print(f"[OK] long-task-progress.md is staged.{metadata_str}", file=sys.stderr)
         sys.exit(0)
     else:
-        print(f"""BLOCKED: long-task-progress.md not staged.
+        # Allow commit but warn - recommend amending to include progress update
+        print(f"""[WARNING] long-task-progress.md not staged.
 {metadata_str}
 
-Steps:
-1. Update long-task-progress.md with session notes (include metadata above)
-2. git add long-task-progress.md
-3. git commit""", file=sys.stderr)
-        sys.exit(2)
+After this commit completes, update progress and amend:
+1. Update .long-task-harness/long-task-progress.md with session notes
+   (include commit hash from this commit)
+2. git add .long-task-harness/long-task-progress.md
+3. git commit --amend --no-edit
+
+This keeps your progress update in the same commit.""", file=sys.stderr)
+        sys.exit(0)
 
 
 if __name__ == "__main__":

@@ -27,23 +27,39 @@ def run_git(*args) -> str:
 
 
 def find_progress_file() -> Path | None:
-    """Find long-task-progress.md in current directory or parents."""
+    """Find long-task-progress.md in current directory or parents.
+    
+    Checks .long-task-harness/ first (new location), then falls back to
+    project root (legacy location).
+    """
     cwd = Path.cwd()
     for path in [cwd, *cwd.parents]:
-        progress_file = path / "long-task-progress.md"
-        if progress_file.exists():
-            return progress_file
+        # Check new location first
+        new_location = path / ".long-task-harness" / "long-task-progress.md"
+        if new_location.exists():
+            return new_location
+        # Fall back to legacy location
+        legacy_location = path / "long-task-progress.md"
+        if legacy_location.exists():
+            return legacy_location
     return None
 
 
 def get_last_progress_commit() -> str | None:
-    """Get the commit hash where long-task-progress.md was last modified."""
-    result = subprocess.run(
-        ['git', 'log', '-1', '--format=%h', '--', 'long-task-progress.md'],
-        capture_output=True,
-        text=True
-    )
-    return result.stdout.strip() if result.returncode == 0 and result.stdout.strip() else None
+    """Get the commit hash where long-task-progress.md was last modified.
+    
+    Checks both new and legacy locations.
+    """
+    # Try new location first
+    for path in ['.long-task-harness/long-task-progress.md', 'long-task-progress.md']:
+        result = subprocess.run(
+            ['git', 'log', '-1', '--format=%h', '--', path],
+            capture_output=True,
+            text=True
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            return result.stdout.strip()
+    return None
 
 
 def get_metadata_staged() -> dict:

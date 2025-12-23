@@ -10,12 +10,18 @@ The core problem: AI agents lose context across sessions. Each new context windo
 
 ## Key Features
 
-- **Progress Documentation**: Maintain `long-task-progress.md` with structured session logs
-- **Feature Tracking**: Track features in `features.json` with pass/fail status
+- **Progress Documentation**: Maintain `.long-task-harness/long-task-progress.md` with structured session logs
+- **Feature Tracking**: Track features in `.long-task-harness/features.json` with pass/fail status
 - **Context-Efficient Scripts**: Load only recent sessions (~78% context reduction)
-- **Session Hooks**: Auto-remind Claude to invoke the skill; block commits without progress updates
+- **Session Hooks**: Auto-remind to invoke the skill; warn on commits without progress updates
 
-### New in v0.2.0-beta
+### New in v0.3.0
+
+- **Cleaner File Layout**: All harness files in `.long-task-harness/` directory
+- **Improved Commit Flow**: Pre-commit warns + suggests `--amend` instead of blocking
+- **Renamed Hooks Script**: `claude_code_install_hooks.py` (clarifies Claude Code-only)
+
+### From v0.2.0
 
 - **Bidirectional Linking**: Sessions reference features; features track their session history
 - **History Research Protocol**: Guidance for using subagents to find relevant history without context bloat
@@ -24,15 +30,13 @@ The core problem: AI agents lose context across sessions. Each new context windo
 
 ## Installation
 
-Clone to your preferred skills directory:
+Clone the repository:
 
 ```bash
-# For Claude Code
 gh repo clone tmustier/long-task-harness ~/.claude/skills/long-task-harness
-
-# Or any other location - the skill will use its actual path
-gh repo clone tmustier/long-task-harness ~/my-skills/long-task-harness
 ```
+
+Or clone anywhere and reference the path in your AGENTS.md/CLAUDE.md.
 
 ## Usage
 
@@ -43,9 +47,9 @@ invoke the long-task-harness skill
 ```
 
 The skill will guide you through:
-1. Initializing progress tracking files (`long-task-progress.md`, `features.json`)
+1. Initializing progress tracking files in `.long-task-harness/`
 2. Creating a feature list for the project
-3. Installing session hooks (optional)
+3. Installing Claude Code hooks (optional, for non-plugin installs)
 
 ### Session Startup (after initialization)
 
@@ -80,37 +84,43 @@ python3 ~/.claude/skills/long-task-harness/scripts/session_metadata.py --since
 
 The skill works with any agent that can read markdown files:
 
-- **Claude Code**: Install session hooks for automatic invocation
+- **Claude Code**: Optionally install hooks for automatic reminders
 - **Cursor/Codex/Droid/Pi**: Add harness instructions to AGENTS.md
 
 On first invocation, the skill will prompt you to configure persistent invocation for your agent.
 
-### Session Hooks (Claude Code)
+### Claude Code Hooks
+
+For Claude Code users who want automatic reminders:
 
 ```bash
-python3 <SKILL_PATH>/scripts/install_hooks.py
+python3 <SKILL_PATH>/scripts/claude_code_install_hooks.py
 ```
 
 This adds to `.claude/settings.json`:
-- **SessionStart**: Requires invoking the skill on new sessions
-- **PreToolUse**: Blocks git commits unless `long-task-progress.md` is staged
+- **SessionStart**: Reminds to invoke the skill on new sessions
+- **PreToolUse**: Warns if `.long-task-harness/long-task-progress.md` not staged, suggests amending
 
 ## Files Created
+
+All files are created in `.long-task-harness/` directory:
 
 | File | Purpose |
 |------|---------|
 | `long-task-progress.md` | Session-by-session work log with structured metadata |
 | `features.json` | Feature checklist with history tracking (v2 format) |
+| `init.sh` | Environment setup script (optional) |
 
 ## Scripts
 
 | Script | Purpose |
 |--------|---------|
-| `init_harness.py` | Initialize harness in a project |
+| `init_harness.py` | Initialize harness in a project (creates `.long-task-harness/`) |
 | `read_progress.py` | Read sessions (`--list`, `--session N`, `-n 5`) |
 | `read_features.py` | Read features (`--feature ID`, `--json`) |
 | `session_metadata.py` | Generate git metadata for session entries |
-| `install_hooks.py` | Install/uninstall session hooks |
+| `claude_code_install_hooks.py` | Install/uninstall Claude Code hooks |
+| `claude_code_precommit_check.py` | Pre-commit hook (warns + suggests amend) |
 
 ## License
 
