@@ -6,7 +6,7 @@
     "created": "2024-11-15",
     "last_updated": "2024-12-27",
     "total_features": 4,
-    "completed_features": 3
+    "completed_features": 4
   },
   "features": [
     {
@@ -72,11 +72,11 @@
         "Create annotated tag v0.3.0",
         "Push tag to origin"
       ],
-      "passes": false,
-      "notes": "In progress - session 1",
+      "passes": true,
+      "notes": "Released 2024-12-27",
       "history": {
         "sessions": [
-          {"session": 1, "date": "2024-12-27", "action": "started", "summary": "Initializing harness, preparing release"}
+          {"session": 1, "date": "2024-12-27", "action": "completed", "summary": "Initialized harness, tagged and pushed v0.3.0"}
         ],
         "files": [".long-task-harness/"],
         "decisions": [

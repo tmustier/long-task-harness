@@ -38,10 +38,10 @@ A skill for filesystem-based agents to maintain continuity across long-running t
 
 ## Session Log
 
-### Session 1 | 2024-12-27 | Commits: 10f22fc..TBD
+### Session 1 | 2024-12-27 | Commits: 10f22fc..5317e46
 
 #### Metadata
-- **Features**: v030-release (started)
+- **Features**: v030-release (completed)
 - **Files Changed**: 
   - `.long-task-harness/` (+new) - harness initialization for self-tracking
 
@@ -51,17 +51,15 @@ Release v0.3.0 - initialize harness for dogfooding, tag release
 #### Accomplished
 - [x] Initialized long-task-harness for itself (dogfooding)
 - [x] Created features.json with v0.3.0 features
-- [ ] Commit harness files
-- [ ] Tag v0.3.0
-- [ ] Push to origin
+- [x] Commit harness files
+- [x] Tag v0.3.0
+- [x] Push to origin
 
 #### Decisions
 - **[D4]** Use long-task-harness itself to track its own development - dogfooding demonstrates the skill
 
 #### Next Steps
-1. Commit `.long-task-harness/` directory
-2. Create annotated tag v0.3.0
-3. Push tag to origin
+- v0.3.0 released! No immediate next steps.
 
 ---
 
