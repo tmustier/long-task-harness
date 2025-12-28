@@ -131,6 +131,7 @@ This section is optional but valuable for complex or unfamiliar codebases.
 | `status_line.py` | Show session status (`--full`, `--json`) |
 | `iteration_loop.py` | Ralph-style iteration loops (see below) |
 | `check_rules.py` | Hookify-style declarative rules |
+| `git_add.py` | Git add wrapper with rule checking |
 
 ---
 
@@ -199,8 +200,21 @@ python3 <SKILL_PATH>/scripts/check_rules.py list
 python3 <SKILL_PATH>/scripts/check_rules.py init  # Create default rules
 ```
 
-**Events:** `bash`, `file`, `commit`, `any`  
+**Events:** `bash`, `file`, `stage`, `commit`, `any`  
 **Actions:** `warn` (continue), `block` (exit 1)
+
+### Git Add with Rule Checking
+
+Use instead of raw `git add` to catch issues at staging time:
+
+```bash
+python3 <SKILL_PATH>/scripts/git_add.py file1.py file2.ts   # Stage specific files
+python3 <SKILL_PATH>/scripts/git_add.py .                    # Stage all
+python3 <SKILL_PATH>/scripts/git_add.py --check-only .       # Preview without staging
+python3 <SKILL_PATH>/scripts/git_add.py --force .            # Stage despite blockers
+```
+
+This checks `file` and `stage` event rules before staging, warns about missing progress updates.
 
 ---
 
