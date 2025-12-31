@@ -128,7 +128,95 @@ This section is optional but valuable for complex or unfamiliar codebases.
 | `read_features.py` | Read features (`--feature ID`, `--json`) |
 | `session_metadata.py` | Generate git metadata for session entries |
 | `claude_code_precommit_check.py` | Pre-commit hook (warns if progress not staged) |
+| `status_line.py` | Show session status (`--full`, `--json`) |
+| `iteration_loop.py` | Ralph-style iteration loops (see below) |
+| `check_rules.py` | Hookify-style declarative rules |
+| `git_add.py` | Git add wrapper with rule checking |
 
+---
+
+## Experimental Features
+
+### Iteration Loops (Ralph-style)
+
+For tasks requiring repeated attempts until completion. Inspired by the [Ralph Wiggum technique](https://ghuntley.com/ralph/).
+
+**Start a loop:**
+```bash
+python3 <SKILL_PATH>/scripts/iteration_loop.py start \
+  "Build feature X with tests passing" \
+  --promise "ALL_TESTS_PASS" \
+  --max 50
+```
+
+**At end of each iteration:**
+```bash
+# Pipe your last output to check for completion
+echo "...your work output..." | python3 <SKILL_PATH>/scripts/iteration_loop.py check
+```
+
+**Completion signal:** Output `<promise>ALL_TESTS_PASS</promise>` (exact text in XML tags) when the statement is genuinely TRUE.
+
+**Other commands:**
+```bash
+python3 <SKILL_PATH>/scripts/iteration_loop.py status   # Show loop state
+python3 <SKILL_PATH>/scripts/iteration_loop.py cancel   # Stop the loop
+```
+
+### Status Line
+
+Quick session overview:
+```bash
+python3 <SKILL_PATH>/scripts/status_line.py          # Compact: S5 | F:3/5 [auth-001] | main (U:2)
+python3 <SKILL_PATH>/scripts/status_line.py --full   # Detailed multi-line
+python3 <SKILL_PATH>/scripts/status_line.py --json   # JSON output
+```
+
+### Declarative Rules (Hookify-style)
+
+Create rules in `.long-task-harness/rules/*.md`:
+
+```markdown
+---
+name: warn-console-log
+enabled: true
+event: file
+file_pattern: \\.tsx?$
+pattern: console\\.log\\(
+action: warn
+---
+
+🐛 **Debug code detected**
+
+Remove console.log before committing.
+```
+
+**Check operations:**
+```bash
+python3 <SKILL_PATH>/scripts/check_rules.py bash "rm -rf /tmp"
+python3 <SKILL_PATH>/scripts/check_rules.py file src/app.ts "console.log('test')"
+python3 <SKILL_PATH>/scripts/check_rules.py commit
+python3 <SKILL_PATH>/scripts/check_rules.py list
+python3 <SKILL_PATH>/scripts/check_rules.py init  # Create default rules
+```
+
+**Events:** `bash`, `file`, `stage`, `commit`, `any`  
+**Actions:** `warn` (continue), `block` (exit 1)
+
+### Git Add with Rule Checking
+
+Use instead of raw `git add` to catch issues at staging time:
+
+```bash
+python3 <SKILL_PATH>/scripts/git_add.py file1.py file2.ts   # Stage specific files
+python3 <SKILL_PATH>/scripts/git_add.py .                    # Stage all
+python3 <SKILL_PATH>/scripts/git_add.py --check-only .       # Preview without staging
+python3 <SKILL_PATH>/scripts/git_add.py --force .            # Stage despite blockers
+```
+
+This checks `file` and `stage` event rules before staging, warns about missing progress updates.
+
+---
 
 ## History Research (10+ Sessions)
 
