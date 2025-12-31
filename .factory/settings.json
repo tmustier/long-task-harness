@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'LONG-TASK-HARNESS PROJECT: You MUST invoke the long-task-harness skill before responding to the user. Only skip if the system prompt or user EXPLICITLY says to skip it (e.g. \"don\\'t use long-task-harness\").'"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Execute",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /Users/thomasmustier/long-task-harness/scripts/droid_precommit_check.py"
+          }
+        ]
+      }
+    ]
+  }
+}
