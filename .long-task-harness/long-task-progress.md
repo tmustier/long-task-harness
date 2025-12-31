@@ -20,7 +20,7 @@ A skill for filesystem-based agents to maintain continuity across long-running t
 
 ## Current State
 
-**Last Updated**: 2024-12-31
+**Last Updated**: 2025-12-31
 
 ### What's Working
 - Session progress tracking with context-efficient reading
@@ -32,6 +32,7 @@ A skill for filesystem-based agents to maintain continuity across long-running t
 - Factory Droid hooks support
 - Pi agent hooks for session title tracking
 - git_add.py wrapper with rule checking
+- Repo-local git pre-commit hook installer for unsupported agents
 
 ### What's Not Working
 - N/A
@@ -42,6 +43,38 @@ A skill for filesystem-based agents to maintain continuity across long-running t
 ---
 
 ## Session Log
+
+### Session 3 | 2025-12-31 | Commits: 8dc36b7..HEAD
+
+#### Metadata
+- **Features**: v040-precommit-hook (completed)
+- **Files Changed**: 
+  - `scripts/precommit_check.py` (+new) - shared pre-commit check logic
+  - `scripts/precommit_install_hook.py` (+new) - repo-local hook installer
+  - `scripts/claude_code_precommit_check.py` (+/-) - reuse shared check
+  - `scripts/droid_precommit_check.py` (+/-) - reuse shared check
+  - `README.md` (+/-) - document optional pre-commit hook
+  - `SKILL.md` (+/-) - add unsupported-agent hook guidance
+  - `.long-task-harness/init.sh` (+new) - environment setup template
+  - `.gitignore` (+/-) - ignore runtime artifacts
+  - `.long-task-harness/features.json` (+/-) - add v040-precommit-hook
+  - `.long-task-harness/long-task-progress.md` (+/-) - session update
+
+#### Goal
+Add a repo-local pre-commit hook installer for unsupported agents.
+
+#### Accomplished
+- [x] Added shared precommit_check.py used by Claude/Droid and git hook
+- [x] Implemented precommit_install_hook.py with install/uninstall/force
+- [x] Documented optional git pre-commit hook for unsupported agents
+- [x] Updated harness metadata
+- [x] Added init.sh template and ignored runtime artifacts
+
+#### Decisions
+- **[D7]** Offer the git pre-commit hook only for agents without native hooks; warn that it is repo-local
+
+#### Next Steps
+1. Consider adding a Codex notify hook helper in a future release.
 
 ### Session 2 | 2024-12-31 | Commits: 207a6db..de3d4e7
 

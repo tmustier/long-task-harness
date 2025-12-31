@@ -4,9 +4,9 @@
   "metadata": {
     "project_name": "long-task-harness",
     "created": "2024-11-15",
-    "last_updated": "2024-12-31",
-    "total_features": 8,
-    "completed_features": 8
+    "last_updated": "2025-12-31",
+    "total_features": 9,
+    "completed_features": 9
   },
   "features": [
     {
@@ -22,7 +22,11 @@
       "notes": "Implemented in cc91748",
       "history": {
         "sessions": [],
-        "files": ["scripts/init_harness.py", "README.md", "SKILL.md"],
+        "files": [
+          "scripts/init_harness.py",
+          "README.md",
+          "SKILL.md"
+        ],
         "decisions": []
       }
     },
@@ -39,9 +43,14 @@
       "notes": "Implemented in cc91748, refined in 8595377",
       "history": {
         "sessions": [],
-        "files": ["scripts/claude_code_precommit_check.py"],
+        "files": [
+          "scripts/claude_code_precommit_check.py"
+        ],
         "decisions": [
-          {"session": 0, "decision": "Suggest follow-up commit instead of amend to preserve commit hashes"}
+          {
+            "session": 0,
+            "decision": "Suggest follow-up commit instead of amend to preserve commit hashes"
+          }
         ]
       }
     },
@@ -58,7 +67,11 @@
       "notes": "Implemented in cc91748",
       "history": {
         "sessions": [],
-        "files": ["scripts/claude_code_install_hooks.py", "README.md", "SKILL.md"],
+        "files": [
+          "scripts/claude_code_install_hooks.py",
+          "README.md",
+          "SKILL.md"
+        ],
         "decisions": []
       }
     },
@@ -76,11 +89,21 @@
       "notes": "Released 2024-12-27",
       "history": {
         "sessions": [
-          {"session": 1, "date": "2024-12-27", "action": "completed", "summary": "Initialized harness, tagged and pushed v0.3.0"}
+          {
+            "session": 1,
+            "date": "2024-12-27",
+            "action": "completed",
+            "summary": "Initialized harness, tagged and pushed v0.3.0"
+          }
         ],
-        "files": [".long-task-harness/"],
+        "files": [
+          ".long-task-harness/"
+        ],
         "decisions": [
-          {"session": 1, "decision": "Use long-task-harness itself to track progress (dogfooding)"}
+          {
+            "session": 1,
+            "decision": "Use long-task-harness itself to track progress (dogfooding)"
+          }
         ]
       }
     },
@@ -97,9 +120,18 @@
       "notes": "Implemented in 414eee6",
       "history": {
         "sessions": [
-          {"session": 2, "date": "2024-12-31", "action": "completed", "summary": "Added status line and declarative rules"}
+          {
+            "session": 2,
+            "date": "2024-12-31",
+            "action": "completed",
+            "summary": "Added status line and declarative rules"
+          }
         ],
-        "files": ["scripts/status_line.py", "scripts/check_rules.py", ".long-task-harness/rules/"],
+        "files": [
+          "scripts/status_line.py",
+          "scripts/check_rules.py",
+          ".long-task-harness/rules/"
+        ],
         "decisions": []
       }
     },
@@ -116,9 +148,16 @@
       "notes": "Implemented in ae4af1a",
       "history": {
         "sessions": [
-          {"session": 2, "date": "2024-12-31", "action": "completed", "summary": "Added git_add.py wrapper"}
+          {
+            "session": 2,
+            "date": "2024-12-31",
+            "action": "completed",
+            "summary": "Added git_add.py wrapper"
+          }
         ],
-        "files": ["scripts/git_add.py"],
+        "files": [
+          "scripts/git_add.py"
+        ],
         "decisions": []
       }
     },
@@ -135,9 +174,18 @@
       "notes": "Implemented in 565de61",
       "history": {
         "sessions": [
-          {"session": 2, "date": "2024-12-31", "action": "completed", "summary": "Added Factory Droid hooks support"}
+          {
+            "session": 2,
+            "date": "2024-12-31",
+            "action": "completed",
+            "summary": "Added Factory Droid hooks support"
+          }
         ],
-        "files": ["scripts/droid_install_hooks.py", "scripts/droid_precommit_check.py", ".factory/settings.json"],
+        "files": [
+          "scripts/droid_install_hooks.py",
+          "scripts/droid_precommit_check.py",
+          ".factory/settings.json"
+        ],
         "decisions": []
       }
     },
@@ -153,10 +201,53 @@
       "notes": "Implemented in de3d4e7",
       "history": {
         "sessions": [
-          {"session": 2, "date": "2024-12-31", "action": "completed", "summary": "Added Pi hooks for session title tracking"}
+          {
+            "session": 2,
+            "date": "2024-12-31",
+            "action": "completed",
+            "summary": "Added Pi hooks for session title tracking"
+          }
         ],
-        "files": ["hooks/pi/resume-sessions.ts"],
+        "files": [
+          "hooks/pi/resume-sessions.ts"
+        ],
         "decisions": []
+      }
+    },
+    {
+      "id": "v040-precommit-hook",
+      "name": "Repo-local pre-commit hook installer",
+      "description": "Optional git pre-commit hook for agents without native hooks",
+      "steps": [
+        "Shared precommit_check.py for hook logic",
+        "Installer script for repo-local git pre-commit hook",
+        "Docs updated with unsupported-agent guidance"
+      ],
+      "passes": true,
+      "notes": "Implemented for v0.4.0",
+      "history": {
+        "sessions": [
+          {
+            "session": 3,
+            "date": "2025-12-31",
+            "action": "completed",
+            "summary": "Added repo-local pre-commit hook installer and shared check"
+          }
+        ],
+        "files": [
+          "scripts/precommit_check.py",
+          "scripts/precommit_install_hook.py",
+          "scripts/claude_code_precommit_check.py",
+          "scripts/droid_precommit_check.py",
+          "README.md",
+          "SKILL.md"
+        ],
+        "decisions": [
+          {
+            "session": 3,
+            "decision": "Offer git pre-commit hook only for agents without native hooks"
+          }
+        ]
       }
     }
   ]

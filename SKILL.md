@@ -54,6 +54,14 @@ If yes: `python3 <SKILL_PATH>/scripts/claude_code_install_hooks.py`
 
 Note: These hooks are for Claude Code only. Other agents should use AGENTS.md instructions.
 
+### Optional: Git Pre-Commit Hook (Unsupported Agents)
+
+If the current agent does not support native hooks (e.g., Codex, Cursor, or other CLI agents),
+offer an optional repo-local git pre-commit hook. Warn that it affects all commits in the
+current repository clone.
+
+If yes: `python3 <SKILL_PATH>/scripts/precommit_install_hook.py`
+
 ## Session Startup Protocol
 
 At the start of each session:
@@ -128,6 +136,8 @@ This section is optional but valuable for complex or unfamiliar codebases.
 | `read_features.py` | Read features (`--feature ID`, `--json`) |
 | `session_metadata.py` | Generate git metadata for session entries |
 | `claude_code_precommit_check.py` | Pre-commit hook (warns if progress not staged) |
+| `precommit_check.py` | Shared pre-commit check logic |
+| `precommit_install_hook.py` | Install repo-local git pre-commit hook |
 | `status_line.py` | Show session status (`--full`, `--json`) |
 | `check_rules.py` | Declarative rules for catching issues |
 | `git_add.py` | Git add wrapper with rule checking |

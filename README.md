@@ -14,6 +14,7 @@ The core problem: AI agents lose context across sessions. Each new context windo
 - **Feature Tracking**: Track features in `.long-task-harness/features.json` with pass/fail status
 - **Context-Efficient Scripts**: Load only recent sessions (~78% context reduction)
 - **Session Hooks**: Auto-remind to invoke the skill; warn on commits without progress updates
+- **Git Pre-Commit Hook**: Optional repo-local warning for agents without native hooks
 
 ### New in v0.4.0
 
@@ -21,6 +22,7 @@ The core problem: AI agents lose context across sessions. Each new context windo
 - **Status Line**: Quick session overview (`status_line.py --full`)
 - **Declarative Rules**: Define rules in markdown to catch issues before commit
 - **Git Add Wrapper**: `git_add.py` checks rules at staging time
+- **Optional Git Pre-Commit Hook**: Repo-local warning for agents without native hooks
 
 ### From v0.3.0
 
@@ -55,7 +57,7 @@ invoke the long-task-harness skill
 The skill will guide you through:
 1. Initializing progress tracking files in `.long-task-harness/`
 2. Creating a feature list for the project
-3. Installing Claude Code hooks (optional, for non-plugin installs)
+3. Installing agent hooks (optional, depending on your agent)
 
 ### Session Startup (after initialization)
 
@@ -90,8 +92,8 @@ python3 ~/.claude/skills/long-task-harness/scripts/session_metadata.py --since
 
 The skill works with any agent that can read markdown files:
 
-- **Claude Code**: Optionally install hooks for automatic reminders
-- **Cursor/Codex/Droid/Pi**: Add harness instructions to AGENTS.md
+- **Claude Code / Factory Droid / Pi**: Optionally install native hooks for reminders
+- **Codex / Cursor / Other**: Add harness instructions to AGENTS.md and optionally install a git pre-commit hook
 
 On first invocation, the skill will prompt you to configure persistent invocation for your agent.
 
@@ -106,6 +108,15 @@ python3 <SKILL_PATH>/scripts/claude_code_install_hooks.py
 This adds to `.claude/settings.json`:
 - **SessionStart**: Reminds to invoke the skill on new sessions
 - **PreToolUse**: Warns if `.long-task-harness/long-task-progress.md` not staged
+
+### Git Pre-Commit Hook (Optional)
+
+For agents without native hooks (Codex, Cursor, etc.), you can install a repo-local pre-commit hook.
+This affects all commits in the current repository clone.
+
+```bash
+python3 <SKILL_PATH>/scripts/precommit_install_hook.py
+```
 
 ## Files Created
 
@@ -132,6 +143,8 @@ All files are created in `.long-task-harness/` directory:
 | `claude_code_precommit_check.py` | Claude Code pre-commit check |
 | `droid_install_hooks.py` | Install Factory Droid hooks |
 | `droid_precommit_check.py` | Factory Droid pre-commit check |
+| `precommit_check.py` | Shared pre-commit check logic |
+| `precommit_install_hook.py` | Install repo-local git pre-commit hook |
 | `pi_install_hooks.py` | Install Pi agent hooks |
 
 ### Status Line
@@ -180,6 +193,7 @@ python3 ~/.claude/skills/long-task-harness/scripts/git_add.py .
 | Claude Code | `python3 <SKILL_PATH>/scripts/claude_code_install_hooks.py` |
 | Factory Droid | `python3 <SKILL_PATH>/scripts/droid_install_hooks.py` |
 | Pi Agent | `python3 <SKILL_PATH>/scripts/pi_install_hooks.py` |
+| Codex / Cursor / Other | `python3 <SKILL_PATH>/scripts/precommit_install_hook.py` |
 
 All installers support `--uninstall` to remove hooks.
 
