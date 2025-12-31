@@ -4,9 +4,9 @@
   "metadata": {
     "project_name": "long-task-harness",
     "created": "2024-11-15",
-    "last_updated": "2024-12-27",
-    "total_features": 4,
-    "completed_features": 4
+    "last_updated": "2024-12-31",
+    "total_features": 8,
+    "completed_features": 8
   },
   "features": [
     {
@@ -82,6 +82,82 @@
         "decisions": [
           {"session": 1, "decision": "Use long-task-harness itself to track progress (dogfooding)"}
         ]
+      }
+    },
+    {
+      "id": "v040-experimental",
+      "name": "Experimental features",
+      "description": "Ralph-style iteration loops, status line, and declarative rules",
+      "steps": [
+        "iteration_loop.py for repeated attempts until completion",
+        "status_line.py for quick session overview",
+        "check_rules.py for declarative rule checking",
+        "Default rules in .long-task-harness/rules/"
+      ],
+      "passes": true,
+      "notes": "Implemented in 414eee6",
+      "history": {
+        "sessions": [
+          {"session": 2, "date": "2024-12-31", "action": "completed", "summary": "Added experimental features from PR #1"}
+        ],
+        "files": ["scripts/iteration_loop.py", "scripts/status_line.py", "scripts/check_rules.py", ".long-task-harness/rules/"],
+        "decisions": []
+      }
+    },
+    {
+      "id": "v040-git-add",
+      "name": "Git add wrapper",
+      "description": "git_add.py checks rules at staging time",
+      "steps": [
+        "Wrapper script for git add",
+        "Checks file and stage event rules before staging",
+        "Warns about missing progress updates"
+      ],
+      "passes": true,
+      "notes": "Implemented in ae4af1a",
+      "history": {
+        "sessions": [
+          {"session": 2, "date": "2024-12-31", "action": "completed", "summary": "Added git_add.py wrapper"}
+        ],
+        "files": ["scripts/git_add.py"],
+        "decisions": []
+      }
+    },
+    {
+      "id": "v040-droid-hooks",
+      "name": "Factory Droid hooks support",
+      "description": "Hooks for Factory Droid agent integration",
+      "steps": [
+        "droid_install_hooks.py for installation",
+        "droid_precommit_check.py for pre-commit",
+        ".factory/settings.json configuration"
+      ],
+      "passes": true,
+      "notes": "Implemented in 565de61",
+      "history": {
+        "sessions": [
+          {"session": 2, "date": "2024-12-31", "action": "completed", "summary": "Added Factory Droid hooks support"}
+        ],
+        "files": ["scripts/droid_install_hooks.py", "scripts/droid_precommit_check.py", ".factory/settings.json"],
+        "decisions": []
+      }
+    },
+    {
+      "id": "v040-pi-hooks",
+      "name": "Pi agent hooks",
+      "description": "TypeScript hooks for Pi coding agent session title tracking",
+      "steps": [
+        "resume-sessions.ts hook for Pi agent",
+        "Session title tracking on resume"
+      ],
+      "passes": true,
+      "notes": "Implemented in de3d4e7",
+      "history": {
+        "sessions": [
+          {"session": 2, "date": "2024-12-31", "action": "completed", "summary": "Added Pi hooks for session title tracking"}
+        ],
+        "files": ["hooks/pi/resume-sessions.ts"],
+        "decisions": []
       }
     }
   ]
