@@ -131,19 +131,16 @@ This section is optional but valuable for complex or unfamiliar codebases.
 | Script | Purpose |
 |--------|---------|
 | `init_harness.py` | Initialize project with tracking files in `.long-task-harness/` |
-| `claude_code_install_hooks.py` | Install/uninstall Claude Code hooks |
+| `claude_code_install_hooks.py` | Install/uninstall Claude Code hooks (prompt-based, triggers on git add) |
+| `pi_install_hooks.py` | Install Pi agent hooks (tool_result modification) |
+| `precommit_install_hook.py` | Install repo-local git pre-commit hook (for Codex, Cursor, etc.) |
+| `precommit_check.py` | Shared pre-commit check logic (warns if progress not staged) |
 | `read_progress.py` | Read sessions (`--list`, `--session N`, `-n 5`) |
 | `read_features.py` | Read features (`--feature ID`, `--json`) |
 | `session_metadata.py` | Generate git metadata for session entries |
-| `claude_code_precommit_check.py` | Pre-commit hook (warns if progress not staged) |
-| `precommit_check.py` | Shared pre-commit check logic |
-| `precommit_install_hook.py` | Install repo-local git pre-commit hook |
 | `status_line.py` | Show session status (`--full`, `--json`) |
 | `check_rules.py` | Declarative rules for catching issues |
 | `git_add.py` | Git add wrapper with rule checking |
-| `droid_install_hooks.py` | Install Factory Droid hooks |
-| `droid_precommit_check.py` | Factory Droid pre-commit check |
-| `pi_install_hooks.py` | Install Pi agent hooks |
 
 ---
 

@@ -16,6 +16,14 @@ The core problem: AI agents lose context across sessions. Each new context windo
 - **Session Hooks**: Auto-remind to invoke the skill; warn on commits without progress updates
 - **Git Pre-Commit Hook**: Optional repo-local warning for agents without native hooks
 
+### New in v0.4.2
+
+- **Fix: Agent-visible warnings**: Hooks now inject warnings that agents actually see
+  - Pi: Uses `tool_result` modification (warning appended to git add output)
+  - Claude Code: Uses `PreToolUse` prompt-based hook (agent evaluates and includes warning)
+  - Codex/Cursor: Uses git pre-commit hook
+- **Consistent messaging**: All agents show the same warning format with `features.json` reminder
+
 ### New in v0.4.1
 
 - **Optional Git Pre-Commit Hook**: Repo-local warning for agents without native hooks

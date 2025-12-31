@@ -86,13 +86,10 @@ def run_check() -> int:
         return 0
 
     print(
-        f"""[WARNING] long-task-progress.md not staged.
-{metadata_str}
-
-Remember to update progress after this commit:
-1. Update .long-task-harness/long-task-progress.md with session notes
-2. git add .long-task-harness/long-task-progress.md
-3. git commit -m "docs: update session progress" """,
+        f"""⚠️ Long-task-harness: .long-task-harness/long-task-progress.md is not staged.
+   If relevant, also update features.json with completed/failed features.
+   Update these files before committing to maintain session continuity.
+{metadata_str}""",
         file=sys.stderr,
     )
     return 0

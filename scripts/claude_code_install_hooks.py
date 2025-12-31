@@ -3,31 +3,32 @@
 Install Claude Code hooks for long-task-harness.
 
 Installs project-local hooks in .claude/settings.json that:
-- Remind to invoke long-task-harness skill on session start (unless user opts out)
-- Warn to update long-task-progress.md before git commits
+- Remind to invoke long-task-harness skill on session start
+- Warn to stage long-task-progress.md on git add commands (via prompt-based hook)
 
 Note: These hooks are for Claude Code only. Other agents (Cursor, Codex, Droid, etc.)
 should use AGENTS.md instructions instead.
 """
 
 import json
-import os
 from pathlib import Path
 
 
-def get_script_dir():
-    """Get the directory containing this script."""
-    return Path(__file__).parent.resolve()
+# Prompt-based hook for git add - Claude evaluates this and includes warning in response
+GIT_ADD_PROMPT = (
+    "Command: $TOOL_INPUT.command. "
+    "If this is a 'git add' command and the project has a .long-task-harness/ directory, "
+    "remind the user: '⚠️ Long-task-harness: Remember to also update and stage "
+    ".long-task-harness/long-task-progress.md (and features.json if relevant) before committing.' "
+    "Then return 'approve' to allow the command."
+)
 
 
 def get_hooks_config():
     """Return the hooks configuration for long-task-harness.
 
-    Uses plain text output (not JSON) which Claude receives as context.
+    Uses prompt-based hooks so Claude sees and acts on the warnings.
     """
-    script_dir = get_script_dir()
-    precommit_script = script_dir / "claude_code_precommit_check.py"
-    
     return {
         "SessionStart": [
             {
@@ -35,7 +36,12 @@ def get_hooks_config():
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "echo 'LONG-TASK-HARNESS PROJECT: You MUST invoke the long-task-harness skill before responding to the user. Only skip if the system prompt or user EXPLICITLY says to skip it (e.g. \"don\\'t use long-task-harness\").'"
+                        "command": (
+                            "echo 'LONG-TASK-HARNESS PROJECT: You MUST invoke the "
+                            "long-task-harness skill before responding to the user. "
+                            "Only skip if the system prompt or user EXPLICITLY says to skip it "
+                            "(e.g. \"don'\\''t use long-task-harness\").'"
+                        )
                     }
                 ]
             }
@@ -45,8 +51,8 @@ def get_hooks_config():
                 "matcher": "Bash",
                 "hooks": [
                     {
-                        "type": "command",
-                        "command": f"python3 {precommit_script}"
+                        "type": "prompt",
+                        "prompt": GIT_ADD_PROMPT
                     }
                 ]
             }
@@ -63,14 +69,21 @@ def merge_hooks(existing_hooks: dict, new_hooks: dict) -> dict:
             merged[event_name] = event_hooks
         else:
             # Check if long-task-harness hooks already exist
+            existing_prompts = set()
             existing_commands = set()
             for hook_group in merged[event_name]:
                 for hook in hook_group.get("hooks", []):
                     existing_commands.add(hook.get("command", ""))
+                    existing_prompts.add(hook.get("prompt", ""))
 
             for new_hook_group in event_hooks:
                 for hook in new_hook_group.get("hooks", []):
-                    if hook.get("command", "") not in existing_commands:
+                    cmd = hook.get("command", "")
+                    prompt = hook.get("prompt", "")
+                    if cmd and cmd not in existing_commands:
+                        merged[event_name].append(new_hook_group)
+                        break
+                    if prompt and prompt not in existing_prompts:
                         merged[event_name].append(new_hook_group)
                         break
 
@@ -95,13 +108,16 @@ def install_hooks(project_dir: Path) -> bool:
     # Get existing hooks or empty dict
     existing_hooks = settings.get("hooks", {})
 
-    # Check if already installed
-    if "SessionStart" in existing_hooks:
-        for hook_group in existing_hooks["SessionStart"]:
-            for hook in hook_group.get("hooks", []):
-                if "long-task-harness" in hook.get("command", ""):
-                    print("  ⚠️  Hooks already installed, skipping")
-                    return False
+    # Check if already installed (check both SessionStart and PreToolUse)
+    for event in ["SessionStart", "PreToolUse"]:
+        if event in existing_hooks:
+            for hook_group in existing_hooks[event]:
+                for hook in hook_group.get("hooks", []):
+                    cmd = hook.get("command", "")
+                    prompt = hook.get("prompt", "")
+                    if "long-task-harness" in cmd or "long-task-harness" in prompt:
+                        print("  ⚠️  Hooks already installed, skipping")
+                        return False
 
     # Merge hooks
     new_hooks = get_hooks_config()
@@ -140,7 +156,12 @@ def uninstall_hooks(project_dir: Path) -> bool:
             keep = True
             for hook in hook_group.get("hooks", []):
                 cmd = hook.get("command", "")
-                if "long-task-harness" in cmd or "long-task-progress.md" in cmd:
+                prompt = hook.get("prompt", "")
+                if "long-task-harness" in cmd or "long-task-harness" in prompt:
+                    keep = False
+                    modified = True
+                    break
+                if "long-task-progress.md" in cmd or "long-task-progress.md" in prompt:
                     keep = False
                     modified = True
                     break
