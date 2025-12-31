@@ -16,13 +16,16 @@ The core problem: AI agents lose context across sessions. Each new context windo
 - **Session Hooks**: Auto-remind to invoke the skill; warn on commits without progress updates
 - **Git Pre-Commit Hook**: Optional repo-local warning for agents without native hooks
 
+### New in v0.4.1
+
+- **Optional Git Pre-Commit Hook**: Repo-local warning for agents without native hooks
+
 ### New in v0.4.0
 
 - **Multi-Agent Hooks**: Native support for Claude Code, Factory Droid, and Pi agent
 - **Status Line**: Quick session overview (`status_line.py --full`)
 - **Declarative Rules**: Define rules in markdown to catch issues before commit
 - **Git Add Wrapper**: `git_add.py` checks rules at staging time
-- **Optional Git Pre-Commit Hook**: Repo-local warning for agents without native hooks
 
 ### From v0.3.0
 

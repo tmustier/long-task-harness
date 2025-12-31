@@ -215,7 +215,7 @@
       }
     },
     {
-      "id": "v040-precommit-hook",
+      "id": "v041-precommit-hook",
       "name": "Repo-local pre-commit hook installer",
       "description": "Optional git pre-commit hook for agents without native hooks",
       "steps": [
@@ -224,7 +224,7 @@
         "Docs updated with unsupported-agent guidance"
       ],
       "passes": true,
-      "notes": "Implemented for v0.4.0",
+      "notes": "Implemented for v0.4.1",
       "history": {
         "sessions": [
           {

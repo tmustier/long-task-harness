@@ -47,17 +47,17 @@ A skill for filesystem-based agents to maintain continuity across long-running t
 ### Session 3 | 2025-12-31 | Commits: 8dc36b7..HEAD
 
 #### Metadata
-- **Features**: v040-precommit-hook (completed)
+- **Features**: v041-precommit-hook (completed)
 - **Files Changed**: 
   - `scripts/precommit_check.py` (+new) - shared pre-commit check logic
   - `scripts/precommit_install_hook.py` (+new) - repo-local hook installer
   - `scripts/claude_code_precommit_check.py` (+/-) - reuse shared check
   - `scripts/droid_precommit_check.py` (+/-) - reuse shared check
-  - `README.md` (+/-) - document optional pre-commit hook
+  - `README.md` (+/-) - document v0.4.1 optional pre-commit hook
   - `SKILL.md` (+/-) - add unsupported-agent hook guidance
   - `.long-task-harness/init.sh` (+new) - environment setup template
   - `.gitignore` (+/-) - ignore runtime artifacts
-  - `.long-task-harness/features.json` (+/-) - add v040-precommit-hook
+  - `.long-task-harness/features.json` (+/-) - add v041-precommit-hook
   - `.long-task-harness/long-task-progress.md` (+/-) - session update
 
 #### Goal
@@ -67,6 +67,7 @@ Add a repo-local pre-commit hook installer for unsupported agents.
 - [x] Added shared precommit_check.py used by Claude/Droid and git hook
 - [x] Implemented precommit_install_hook.py with install/uninstall/force
 - [x] Documented optional git pre-commit hook for unsupported agents
+- [x] Bumped docs to v0.4.1
 - [x] Updated harness metadata
 - [x] Added init.sh template and ignored runtime artifacts
 
