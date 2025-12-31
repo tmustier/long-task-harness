@@ -85,12 +85,11 @@
       }
     },
     {
-      "id": "v040-experimental",
-      "name": "Experimental features",
-      "description": "Ralph-style iteration loops, status line, and declarative rules",
+      "id": "v040-status-rules",
+      "name": "Status line and declarative rules",
+      "description": "Quick status overview and rule-based issue checking",
       "steps": [
-        "iteration_loop.py for repeated attempts until completion",
-        "status_line.py for quick session overview",
+        "status_line.py for quick session overview (compact, full, json)",
         "check_rules.py for declarative rule checking",
         "Default rules in .long-task-harness/rules/"
       ],
@@ -98,9 +97,9 @@
       "notes": "Implemented in 414eee6",
       "history": {
         "sessions": [
-          {"session": 2, "date": "2024-12-31", "action": "completed", "summary": "Added experimental features from PR #1"}
+          {"session": 2, "date": "2024-12-31", "action": "completed", "summary": "Added status line and declarative rules"}
         ],
-        "files": ["scripts/iteration_loop.py", "scripts/status_line.py", "scripts/check_rules.py", ".long-task-harness/rules/"],
+        "files": ["scripts/status_line.py", "scripts/check_rules.py", ".long-task-harness/rules/"],
         "decisions": []
       }
     },

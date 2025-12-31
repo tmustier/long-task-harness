@@ -15,11 +15,17 @@ The core problem: AI agents lose context across sessions. Each new context windo
 - **Context-Efficient Scripts**: Load only recent sessions (~78% context reduction)
 - **Session Hooks**: Auto-remind to invoke the skill; warn on commits without progress updates
 
-### New in v0.3.0
+### New in v0.4.0
+
+- **Multi-Agent Hooks**: Native support for Claude Code, Factory Droid, and Pi agent
+- **Status Line**: Quick session overview (`status_line.py --full`)
+- **Declarative Rules**: Define rules in markdown to catch issues before commit
+- **Git Add Wrapper**: `git_add.py` checks rules at staging time
+
+### From v0.3.0
 
 - **Cleaner File Layout**: All harness files in `.long-task-harness/` directory
 - **Improved Commit Flow**: Pre-commit warns instead of blocking
-- **Renamed Hooks Script**: `claude_code_install_hooks.py` (clarifies Claude Code-only)
 
 ### From v0.2.0
 
@@ -119,8 +125,63 @@ All files are created in `.long-task-harness/` directory:
 | `read_progress.py` | Read sessions (`--list`, `--session N`, `-n 5`) |
 | `read_features.py` | Read features (`--feature ID`, `--json`) |
 | `session_metadata.py` | Generate git metadata for session entries |
-| `claude_code_install_hooks.py` | Install/uninstall Claude Code hooks |
-| `claude_code_precommit_check.py` | Pre-commit hook (warns if progress not staged) |
+| `status_line.py` | Quick status overview (`--full`, `--json`) |
+| `check_rules.py` | Check operations against declarative rules |
+| `git_add.py` | Git add wrapper with rule checking |
+| `claude_code_install_hooks.py` | Install Claude Code hooks |
+| `claude_code_precommit_check.py` | Claude Code pre-commit check |
+| `droid_install_hooks.py` | Install Factory Droid hooks |
+| `droid_precommit_check.py` | Factory Droid pre-commit check |
+| `pi_install_hooks.py` | Install Pi agent hooks |
+
+### Status Line
+
+Get a quick overview of your session:
+
+```bash
+python3 ~/.claude/skills/long-task-harness/scripts/status_line.py
+# Output: S2 | F:4/8 [v040-pi-hooks] | main (U:2)
+
+python3 ~/.claude/skills/long-task-harness/scripts/status_line.py --full
+# Multi-line detailed status
+```
+
+### Declarative Rules
+
+Define rules in `.long-task-harness/rules/*.md` to catch issues:
+
+```markdown
+---
+name: warn-console-log
+enabled: true
+event: file
+file_pattern: \\.tsx?$
+pattern: console\\.log\\(
+action: warn
+---
+
+🐛 **Debug code detected** - Remove console.log before committing.
+```
+
+Check rules manually or use `git_add.py` for automatic checking:
+
+```bash
+# Check a bash command against rules
+python3 ~/.claude/skills/long-task-harness/scripts/check_rules.py bash "rm -rf /"
+
+# Stage files with rule checking
+python3 ~/.claude/skills/long-task-harness/scripts/git_add.py .
+```
+
+### Agent-Specific Hooks
+
+| Agent | Install Command |
+|-------|-----------------|
+| Claude Code | `python3 <SKILL_PATH>/scripts/claude_code_install_hooks.py` |
+| Factory Droid | `python3 <SKILL_PATH>/scripts/droid_install_hooks.py` |
+| Pi Agent | `python3 <SKILL_PATH>/scripts/pi_install_hooks.py` |
+
+All installers support `--uninstall` to remove hooks.
 
 ## License
 

@@ -27,7 +27,8 @@ A skill for filesystem-based agents to maintain continuity across long-running t
 - Feature tracking with bidirectional history
 - Claude Code hooks (optional)
 - Multi-agent support via AGENTS.md/CLAUDE.md
-- Experimental: iteration loops, status line, declarative rules
+- Status line for quick session overview
+- Declarative rules for catching issues before commit
 - Factory Droid hooks support
 - Pi agent hooks for session title tracking
 - git_add.py wrapper with rule checking
@@ -45,10 +46,9 @@ A skill for filesystem-based agents to maintain continuity across long-running t
 ### Session 2 | 2024-12-31 | Commits: 207a6db..de3d4e7
 
 #### Metadata
-- **Features**: v040-experimental, v040-git-add, v040-droid-hooks, v040-pi-hooks (all completed)
+- **Features**: v040-status-rules, v040-git-add, v040-droid-hooks, v040-pi-hooks (all completed)
 - **Files Changed**: 
-  - `scripts/iteration_loop.py` (+317) - Ralph-style iteration loops
-  - `scripts/status_line.py` (+297) - quick session overview
+  - `scripts/status_line.py` (+297) - quick session overview (compact/full/json)
   - `scripts/check_rules.py` (+396) - declarative rule checking
   - `scripts/git_add.py` (+292) - git add wrapper with rule checking
   - `scripts/droid_install_hooks.py` (+191) - Factory Droid hooks installer
@@ -57,24 +57,23 @@ A skill for filesystem-based agents to maintain continuity across long-running t
   - `.long-task-harness/rules/` (+new) - default rule templates
 
 #### Goal
-Add experimental features, multi-agent hooks support, release v0.4.0
+Add status/rules features, multi-agent hooks support, release v0.4.0
 
 #### Accomplished
-- [x] Iteration loops (Ralph-style repeated attempts)
-- [x] Status line for quick session overview
-- [x] Declarative rules system with check_rules.py
-- [x] git_add.py wrapper for rule checking at staging time
-- [x] Factory Droid hooks support
-- [x] Pi agent hooks for session title tracking
+- [x] Status line for quick session overview (compact, full, json output)
+- [x] Declarative rules system - define rules in markdown, catch issues before commit
+- [x] git_add.py wrapper - checks rules at staging time
+- [x] Factory Droid hooks - session start reminder + pre-commit checks
+- [x] Pi agent hooks - session title tracking from commit messages
 - [x] Update progress files and features.json
 - [x] Tag and push v0.4.0
 
 #### Decisions
-- **[D5]** Add experimental features as opt-in - iteration loops and rules are power-user features
-- **[D6]** Support multiple agent platforms - Claude Code, Factory Droid, Pi agent each get native hooks
+- **[D5]** Support multiple agent platforms - Claude Code, Factory Droid, Pi agent each get native hooks
+- **[D6]** Rules are opt-in - create `.long-task-harness/rules/*.md` to enable
 
 #### Next Steps
-- v0.4.0 released! Consider promoting experimental features to stable in future release.
+- v0.4.0 released!
 
 ---
 

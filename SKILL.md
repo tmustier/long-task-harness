@@ -129,39 +129,15 @@ This section is optional but valuable for complex or unfamiliar codebases.
 | `session_metadata.py` | Generate git metadata for session entries |
 | `claude_code_precommit_check.py` | Pre-commit hook (warns if progress not staged) |
 | `status_line.py` | Show session status (`--full`, `--json`) |
-| `iteration_loop.py` | Ralph-style iteration loops (see below) |
-| `check_rules.py` | Hookify-style declarative rules |
+| `check_rules.py` | Declarative rules for catching issues |
 | `git_add.py` | Git add wrapper with rule checking |
+| `droid_install_hooks.py` | Install Factory Droid hooks |
+| `droid_precommit_check.py` | Factory Droid pre-commit check |
+| `pi_install_hooks.py` | Install Pi agent hooks |
 
 ---
 
-## Experimental Features
-
-### Iteration Loops (Ralph-style)
-
-For tasks requiring repeated attempts until completion. Inspired by the [Ralph Wiggum technique](https://ghuntley.com/ralph/).
-
-**Start a loop:**
-```bash
-python3 <SKILL_PATH>/scripts/iteration_loop.py start \
-  "Build feature X with tests passing" \
-  --promise "ALL_TESTS_PASS" \
-  --max 50
-```
-
-**At end of each iteration:**
-```bash
-# Pipe your last output to check for completion
-echo "...your work output..." | python3 <SKILL_PATH>/scripts/iteration_loop.py check
-```
-
-**Completion signal:** Output `<promise>ALL_TESTS_PASS</promise>` (exact text in XML tags) when the statement is genuinely TRUE.
-
-**Other commands:**
-```bash
-python3 <SKILL_PATH>/scripts/iteration_loop.py status   # Show loop state
-python3 <SKILL_PATH>/scripts/iteration_loop.py cancel   # Stop the loop
-```
+## Additional Features
 
 ### Status Line
 
@@ -172,9 +148,9 @@ python3 <SKILL_PATH>/scripts/status_line.py --full   # Detailed multi-line
 python3 <SKILL_PATH>/scripts/status_line.py --json   # JSON output
 ```
 
-### Declarative Rules (Hookify-style)
+### Declarative Rules
 
-Create rules in `.long-task-harness/rules/*.md`:
+Define rules in `.long-task-harness/rules/*.md` to catch common issues before they're committed:
 
 ```markdown
 ---
