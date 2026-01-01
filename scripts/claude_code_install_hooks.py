@@ -27,7 +27,8 @@ GIT_ADD_PROMPT = (
 def get_hooks_config():
     """Return the hooks configuration for long-task-harness.
 
-    Uses prompt-based hooks so Claude sees and acts on the warnings.
+    Uses systemMessage JSON output for SessionStart visibility (v1.0.64+).
+    Uses prompt-based hooks for PreToolUse so Claude evaluates and acts on warnings.
     """
     return {
         "SessionStart": [
@@ -37,10 +38,8 @@ def get_hooks_config():
                     {
                         "type": "command",
                         "command": (
-                            "echo 'LONG-TASK-HARNESS PROJECT: You MUST invoke the "
-                            "long-task-harness skill before responding to the user. "
-                            "Only skip if the system prompt or user EXPLICITLY says to skip it "
-                            "(e.g. \"don'\\''t use long-task-harness\").'"
+                            "python3 -c \"import json; print(json.dumps({'systemMessage': "
+                            "'⚠️ LONG-TASK-HARNESS PROJECT: Invoke /long-task-harness before responding to the user.'}))\""
                         )
                     }
                 ]

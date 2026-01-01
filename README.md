@@ -16,6 +16,10 @@ The core problem: AI agents lose context across sessions. Each new context windo
 - **Session Hooks**: Auto-remind to invoke the skill; warn on commits without progress updates
 - **Git Pre-Commit Hook**: Optional repo-local warning for agents without native hooks
 
+### New in v0.4.3
+
+- **Fix: SessionStart hook visibility**: Claude Code SessionStart hooks now use `systemMessage` JSON output format, making the reminder actually visible to agents (requires Claude Code v1.0.64+)
+
 ### New in v0.4.2
 
 - **Fix: Agent-visible warnings**: Hooks now inject warnings that agents actually see
